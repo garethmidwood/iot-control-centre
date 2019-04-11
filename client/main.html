@@ -1,0 +1,48 @@
+<head>
+  <title>Dev day demo</title>
+</head>
+
+<body>
+    {{> head}}
+
+    <ul id="options" class="col-{{options.count}}">
+        {{#each options}}
+            {{> option}}
+        {{/each}}
+    </ul>
+</body>
+
+<template name="head">
+    <button class="reset">reset</button>
+    <h1>
+        http://devday.sonumi.com
+        <span>click the buttons to vote</span>
+    </h1>
+</template>
+
+<template name="option">
+    <li>
+        <div class="bar-chart">
+            <span>{{votes}}</span>
+            <div style="height: {{votepercentage}}%">
+                <span>{{votes}}</span>
+            </div>
+        </div>
+        <h2>
+            {{label}}
+        </h2>
+        <button>
+            <span>click to</span>
+            vote!
+        </button>
+        {{#if winner}}
+            <div id="winner">
+                <div>
+                    <img style="width: 300px; height: 227px;" src="/arnie.gif" />
+                    <span>"{{label}}" has been chosen, enjoy!</span>
+                    <button class="reset">reset</button>
+                </div>
+            </div>
+        {{/if}}
+    </li>
+</template>

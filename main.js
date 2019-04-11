@@ -1,0 +1,1 @@
+OptionsCollection = new Mongo.Collection("options");

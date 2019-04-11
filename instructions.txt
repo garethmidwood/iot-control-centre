@@ -1,0 +1,12 @@
+# connect to DB
+meteor mongo
+
+# use it
+use meteor
+
+# create a collection
+db.createCollection("options");
+
+# add records to the collection
+db.options.insert({votes: 0, winner: false, label: "option 1"})
+db.options.insert({votes: 0, winner: false, label: "option 2"})
