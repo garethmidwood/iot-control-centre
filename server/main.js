@@ -90,6 +90,10 @@ function beat(pulseRate) {
 }
 
 function onBeat() {
+  // TODO: loop through devices on a cycle. 
+  // needs a pointer per device type
+
+
   // clear collections
   Led1Collection.remove({});
 
