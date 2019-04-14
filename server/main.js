@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 
-var beatTimout;
+var beatTimeout;
 
 Meteor.publish("config", function() { return ConfigCollection.find({}); });
 
@@ -75,12 +75,12 @@ Meteor.startup(() => {
 
 function setNewBeat(pulseRate) {
   console.log('Setting new pulse rate to ' + pulseRate);
-  Meteor.clearTimeout(beatTimout);
+  Meteor.clearTimeout(beatTimeout);
   beat(pulseRate);
 }
 
 function beat(pulseRate) {
-    beatTimout = Meteor.setTimeout(function () {
+    beatTimeout = Meteor.setTimeout(function () {
         console.log('beat at ' + pulseRate);
 
         onBeat();

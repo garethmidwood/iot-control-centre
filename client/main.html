@@ -27,12 +27,6 @@
 
 <template name="beat_counter">
     <div class="beat_counter">
-        {{#each config}}
-            {{> beats}}
-        {{/each}}
+        <span>{{config.value}}</span>bpm
     </div>
-</template>
-
-<template name="beats">
-    <span>{{value}}</span>bpm
 </template>

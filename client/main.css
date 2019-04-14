@@ -38,10 +38,11 @@ ul li::before {
     width: 300px;
     text-align: center;
     color: white;
+    transition: background-color 1000ms linear;
 }
 
 .pulse {
-    background-color: #F66;
+    background-color: #900;
 }
 
 .beat_counter span {
