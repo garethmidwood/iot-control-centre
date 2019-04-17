@@ -13,6 +13,7 @@
     </ul>
 
     {{> beat_counter}}
+    {{> keyboard}}
 </body>
 
 <template name="head">
@@ -28,5 +29,19 @@
 <template name="beat_counter">
     <div class="beat_counter">
         <span>{{config.value}}</span>bpm
+    </div>
+</template>
+
+<template name="keyboard">
+    <div class="keyboard">
+        <button class="keyboardKey">A</button>
+        <button class="keyboardKey">B</button>
+        <button class="keyboardKey">C</button>
+        <button class="keyboardKey">D</button>
+        <button class="keyboardKey">E</button>
+        <button class="keyboardKey">F</button>
+        <button class="keyboardKey">G</button>
+        <button class="keyboardKey">H</button>
+        <button class="clear">Reset/Clear</button>
     </div>
 </template>

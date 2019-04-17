@@ -60,24 +60,29 @@ Template.body.events({
     }
 });
 */
-
-
-
-
-
-/*
-Template.device.events({
-    'click button'(event, instance) {
-        // increment the votes counter when button is clicked
-        newVotes = 1 + (this.votes ? this.votes : 0);
-
-        var isWinner = (newVotes >= 10);
-
-        DevicesCollection.update(this._id, {$set: {votes: newVotes, winner: isWinner}});
+Template.keyboard.helpers({
+    config: function() {
+        return true;
     }
 });
-*/
 
+Template.keyboard.events({
+    'click .keyboardKey'(event, instance) {
+        // increment the votes counter when button is clicked
+        addToSequence(event.currentTarget.innerHTML);
+    },
+    'click .clear'(event, instance) {
+        // increment the votes counter when button is clicked
+        clearSequence();
+    }
+});
+
+function addToSequence(newNote){
+    Meteor.call('add_to_sequence',newNote);
+}
+function clearSequence(){
+    Meteor.call('clear_sequence',1);
+}
 
 
 
