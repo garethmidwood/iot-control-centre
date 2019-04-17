@@ -9,6 +9,8 @@ Meteor.publish("config", function() { return ConfigCollection.find({}); });
 
 Meteor.publish("devices", function() { return DevicesCollection.find({}); });
 
+Meteor.publish("notes", function() { return NotesCollection.find({}); });
+
 
 Meteor.publish("led1", function() { return Led1Collection.find({}); });
 Meteor.publish("led2", function() { return Led2Collection.find({}); });
@@ -72,6 +74,18 @@ Meteor.methods({
    'play_music': function(){
       playMusic();
       return 'sequence submitted';
+   },
+   'get_sequence': function(musicSequence){
+      // ConfigCollection.update({_id: 'bpm'}, {value: note});
+      return musicSequence;
+   },
+   'get_sequence_counter': function(sequenceCounter){
+      // ConfigCollection.update({_id: 'bpm'}, {value: note});
+      return sequenceCounter;
+   },
+   'get_music_counter': function(musicCounter){
+      // ConfigCollection.update({_id: 'bpm'}, {value: note});
+      return musicCounter;
    }
 });
 
@@ -120,7 +134,7 @@ function onBeat() {
     }
     currentNote = musicSequence[musicCounter];
     SoundCollection.remove({});
-    SoundCollection.insert({notes: currentNote,instrument:'vibraphone'})
+    SoundCollection.insert({notes: currentNote,instrument:'vibraphone'});
     musicCounter++;
   }
   // clear collections 
@@ -128,11 +142,13 @@ function onBeat() {
 
   Led1Collection.insert({colour: "red"});
 }
+
 function clearSequence(){
   musicSequence = {};
   sequenceCounter = 0;
   musicCounter = 0;
 }
+
 function addNoteToSequence(note){
   if(sequenceCounter == 8){
     sequenceCounter = 0;

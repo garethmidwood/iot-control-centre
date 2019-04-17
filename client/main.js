@@ -9,6 +9,7 @@ var configHandle = Meteor.subscribe("config");
 var beatTimeout;
 var beatInitialised = false;
 
+var soundHandle = Meteor.subscribe('sound');
 
 Tracker.autorun(function() {
     if (configHandle.ready()) {
@@ -29,6 +30,14 @@ Tracker.autorun(function() {
         let handle = query.observeChanges({
             changed: function (id, fields) {
                 setNewBeat(60000 / fields.value);
+            }
+        });
+    }
+    if (soundHandle.ready()) {
+        let notes = SoundCollection.find();
+        let sequenceHandle = notes.observeChanges({
+            changed: function (id, fields) {
+                
             }
         });
     }
@@ -60,16 +69,12 @@ Template.body.events({
     }
 });
 */
-Template.keyboard.helpers({
-    config: function() {
-        return true;
-    }
-});
 
 Template.keyboard.events({
     'click .keyboardKey'(event, instance) {
         // increment the votes counter when button is clicked
         addToSequence(event.currentTarget.innerHTML);
+
     },
     'click .clear'(event, instance) {
         // increment the votes counter when button is clicked
@@ -79,11 +84,30 @@ Template.keyboard.events({
 
 function addToSequence(newNote){
     Meteor.call('add_to_sequence',newNote);
+    get_sequence();
+    get_sequence_counter();
+    get_music_counter();
+    
 }
 function clearSequence(){
     Meteor.call('clear_sequence',1);
 }
 
+function get_sequence(){
+    var sequence = Meteor.call('get_sequence',1);
+    console.log('sequence');
+    console.log(sequence);
+}
+function get_sequence_counter(){
+    var sequence_counter = Meteor.call('get_sequence_counter',1);
+    console.log('sequence_counter');
+    console.log(sequence_counter);
+}
+function get_music_counter(){
+    var music_counter = Meteor.call('get_music_counter',1);
+    console.log('music_counter');
+    console.log(music_counter);
+}
 
 
 
@@ -109,6 +133,22 @@ function beat(pulseRate) {
 
 function onBeat() {
     $('.beat_counter').toggleClass('pulse');
+}
+
+function clearSequence(){
+  musicSequence = {};
+  sequenceCounter = 0;
+  musicCounter = 0;
+  return true
+}
+
+function addNoteToSequence(note){
+  if(sequenceCounter == 8){
+    sequenceCounter = 0;
+  }
+  musicSequence[sequenceCounter] = note;
+  sequenceCounter++
+  console.log(musicSequence);
 }
 
 
