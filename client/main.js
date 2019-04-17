@@ -11,6 +11,8 @@ var beatInitialised = false;
 
 var soundHandle = Meteor.subscribe('sound');
 
+var noteSequenceHandle = Meteor.subscribe('noteSequence');
+
 Tracker.autorun(function() {
     if (configHandle.ready()) {
         // this will only ever return one record
@@ -35,11 +37,19 @@ Tracker.autorun(function() {
     }
     if (soundHandle.ready()) {
         let notes = SoundCollection.find();
-        let sequenceHandle = notes.observeChanges({
+        let handle = notes.observeChanges({
             changed: function (id, fields) {
                 
             }
         });
+    }
+    if (noteSequenceHandle.ready()) {
+        let noteSequenceCollection = NoteSequenceCollection.find();
+        let handle = noteSequenceCollection.observeChanges({
+            changed: function (id, fields) {
+                console.log('changed note sequence');
+            }
+        });        
     }
 });
 
@@ -57,6 +67,11 @@ Template.beat_counter.helpers({
     }
 });
 
+Template.keyboard.helpers({
+    currentNotes: function() {
+        return NoteSequenceCollection.find({}, {sort: {_id: 1}});
+    }
+});
 
 /*
 Template.body.events({
@@ -83,31 +98,12 @@ Template.keyboard.events({
 });
 
 function addToSequence(newNote){
-    Meteor.call('add_to_sequence',newNote);
-    get_sequence();
-    get_sequence_counter();
-    get_music_counter();
-    
+    Meteor.call('add_to_sequence', newNote);
 }
 function clearSequence(){
     Meteor.call('clear_sequence',1);
 }
 
-function get_sequence(){
-    var sequence = Meteor.call('get_sequence',1);
-    console.log('sequence');
-    console.log(sequence);
-}
-function get_sequence_counter(){
-    var sequence_counter = Meteor.call('get_sequence_counter',1);
-    console.log('sequence_counter');
-    console.log(sequence_counter);
-}
-function get_music_counter(){
-    var music_counter = Meteor.call('get_music_counter',1);
-    console.log('music_counter');
-    console.log(music_counter);
-}
 
 
 

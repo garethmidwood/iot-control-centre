@@ -12,12 +12,6 @@
         {{/each}}
     </ul>
 
-    <ul id="notes" class="col-{{sound.count}}">
-        {{#each sound}}
-            {{> sound}}
-        {{/each}}
-    </ul>
-
     {{> beat_counter}}
     {{> keyboard}}
 </body>
@@ -39,6 +33,9 @@
 </template>
 
 <template name="keyboard">
+    {{#each currentNotes}}
+        {{> currentNote}}
+    {{/each}}
     <div class="keyboard">
         <button class="keyboardKey">A</button>
         <button class="keyboardKey">B</button>
@@ -52,9 +49,9 @@
     </div>
 </template>
 
-<template name="sound">
+<template name="currentNote">
     <div class="note">
-        {{sound.notes}}Test
+        {{_id}} : {{value}}
     </div>
 </template>
 

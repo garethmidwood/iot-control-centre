@@ -2,6 +2,7 @@ ConfigCollection = new Mongo.Collection("config");
 
 DevicesCollection = new Mongo.Collection("devices");
 
+NoteSequenceCollection = new Mongo.Collection("noteSequence");
 
 Led1Collection = new Mongo.Collection("led1");
 Led2Collection = new Mongo.Collection("led2");

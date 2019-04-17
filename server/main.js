@@ -1,15 +1,14 @@
 import { Meteor } from 'meteor/meteor';
 
 var beatTimeout;
-var musicCounter = 0;
-var sequenceCounter = 0;
-var musicSequence = {};
+var noteSequencePointer = 0;
+var nextInputSequencePointer = 0;
 
 Meteor.publish("config", function() { return ConfigCollection.find({}); });
 
 Meteor.publish("devices", function() { return DevicesCollection.find({}); });
 
-Meteor.publish("notes", function() { return NotesCollection.find({}); });
+Meteor.publish("noteSequence", function() { return NoteSequenceCollection.find({}); });
 
 
 Meteor.publish("led1", function() { return Led1Collection.find({}); });
@@ -62,7 +61,7 @@ Meteor.methods({
    },
    'clear_sequence': function(){
       // ConfigCollection.update({_id: 'bpm'}, {value: note});
-      clearSequence();
+      clearBeatSequences();
       return 'cleared_sequence';
    },
    'add_to_sequence': function(note){
@@ -74,34 +73,51 @@ Meteor.methods({
    'play_music': function(){
       playMusic();
       return 'sequence submitted';
-   },
-   'get_sequence': function(musicSequence){
-      // ConfigCollection.update({_id: 'bpm'}, {value: note});
-      return musicSequence;
-   },
-   'get_sequence_counter': function(sequenceCounter){
-      // ConfigCollection.update({_id: 'bpm'}, {value: note});
-      return sequenceCounter;
-   },
-   'get_music_counter': function(musicCounter){
-      // ConfigCollection.update({_id: 'bpm'}, {value: note});
-      return musicCounter;
    }
 });
 
 
 Meteor.startup(() => {
     // code to run on server at startup
-    console.log('Clearing all devices');
-    DevicesCollection.remove({});
-
-    console.log('Resetting config');
-    ConfigCollection.remove({});
-    ConfigCollection.insert({_id: 'bpm', value: 60});
+    resetDevicesCollection();
+    resetConfigCollection();
+    resetNoteSequenceCollection();
 
     // default beat - 1second
     beat(1000);
 });
+
+
+function resetDevicesCollection() {
+    console.log('Resetting device collection');
+    DevicesCollection.remove({});
+}
+
+function resetConfigCollection() {
+    console.log('Resetting config collection');
+    ConfigCollection.remove({});
+    ConfigCollection.insert({_id: 'bpm', value: 60});
+}
+
+function resetNoteSequenceCollection() {
+    console.log('Resetting note sequence collection');
+    noteSequencePointer = 0;
+
+    NoteSequenceCollection.remove({});
+    // insert some defaults
+    NoteSequenceCollection.insert({_id: '0', value: null});
+    NoteSequenceCollection.insert({_id: '1', value: null});
+    NoteSequenceCollection.insert({_id: '2', value: null});
+    NoteSequenceCollection.insert({_id: '3', value: null});
+    NoteSequenceCollection.insert({_id: '4', value: null});
+    NoteSequenceCollection.insert({_id: '5', value: null});
+    NoteSequenceCollection.insert({_id: '6', value: null});
+    NoteSequenceCollection.insert({_id: '7', value: null});  
+}
+
+
+
+
 
 
 
@@ -125,35 +141,46 @@ function onBeat() {
   // TODO: loop through devices on a cycle. 
   // needs a pointer per device type
 
-  if(typeof musicSequence[0] != 'undefined'){
-    console.log('musicCounter: '+musicCounter);
-    console.log('sequenceCounter: '+sequenceCounter);
-    console.log(musicSequence);
-    if(musicCounter == sequenceCounter){
-      musicCounter = 0;
-    }
-    currentNote = musicSequence[musicCounter];
+  console.log('noteSequencePointer: ' + noteSequencePointer);
+
+  var sequenceLength = NoteSequenceCollection.find({}).count();
+
+  // reset note sequence pointer when it gets to the end of the sequence
+  if (noteSequencePointer == sequenceLength){
+    noteSequencePointer = 0;
+  }
+
+  // find the note to play
+  console.log('Looking for note sequence at position ' + noteSequencePointer);
+  var currentNote = NoteSequenceCollection.findOne({_id: noteSequencePointer.toString()});
+  console.log('currentNote.value is... ' + currentNote.value);
+
+  // if there's a defined note then we'll play it
+  if (typeof currentNote.value != 'undefined'){
     SoundCollection.remove({});
     SoundCollection.insert({notes: currentNote,instrument:'vibraphone'});
-    musicCounter++;
+    noteSequencePointer++;
   }
+
   // clear collections 
   Led1Collection.remove({});
-
   Led1Collection.insert({colour: "red"});
 }
 
-function clearSequence(){
-  musicSequence = {};
-  sequenceCounter = 0;
-  musicCounter = 0;
+// Resets the 'beat' sequence outputs
+// currently just notes, will also include LED's in future.
+function clearBeatSequences(){
+  resetNoteSequenceCollection();
 }
 
+
 function addNoteToSequence(note){
-  if(sequenceCounter == 8){
-    sequenceCounter = 0;
+  console.log('adding note to sequence');
+  
+  if (nextInputSequencePointer == 8) {
+    nextInputSequencePointer = 0;
   }
-  musicSequence[sequenceCounter] = note;
-  sequenceCounter++
-  console.log(musicSequence);
+
+  NoteSequenceCollection.update({_id: nextInputSequencePointer.toString()}, {value: note});
+  nextInputSequencePointer++
 }
