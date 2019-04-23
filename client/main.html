@@ -33,20 +33,59 @@
 </template>
 
 <template name="keyboard">
-    {{#each currentNotes}}
-        {{> currentNote}}
-    {{/each}}
-    <div class="keyboard">
-        <button class="keyboardKey">A</button>
-        <button class="keyboardKey">B</button>
-        <button class="keyboardKey">C</button>
-        <button class="keyboardKey">D</button>
-        <button class="keyboardKey">E</button>
-        <button class="keyboardKey">F</button>
-        <button class="keyboardKey">G</button>
-        <button class="keyboardKey">H</button>
-        <button class="clear">Reset/Clear</button>
+
+    <div class="notes__wrapper">
+        <ol class="notes">
+            {{#each currentNotes}}
+                {{> currentNote}}
+            {{/each}}
+        </ol>
     </div>
+
+    <div class="buttons__wrapper">
+        <button class="clear">
+            Reset/Clear
+        </button>
+    </div>
+
+    <div class="keyboard__wrapper">
+        <div class="keyboard__logo-wrapper">
+            <img class="keyboard__logo" src="images/logo.png" alt="Creode" />
+        </div>
+        <ol class="keyboard__keys">
+            <li class="keyboard__key">
+                <button class="keyboardKey">A</button>
+            </li>
+            <li class="keyboard__flat"> </li>
+            <li class="keyboard__key">
+                <button class="keyboardKey">B</button>
+            </li>
+            <li class="keyboard__flat"> </li>
+            <li class="keyboard__key">
+                <button class="keyboardKey">C</button>
+            </li>
+            <li class="keyboard__key">
+                <button class="keyboardKey">D</button>
+            </li>
+            <li class="keyboard__flat"> </li>
+            <li class="keyboard__key">
+                <button class="keyboardKey">E</button>
+            </li>
+            <li class="keyboard__flat"> </li>
+            <li class="keyboard__key">
+                <button class="keyboardKey">F</button>
+            </li>
+            <li class="keyboard__flat"> </li>
+            <li class="keyboard__key">
+                <button class="keyboardKey">G</button>
+            </li>
+            <li class="keyboard__key">
+                <button class="keyboardKey">H</button>
+            </li>
+            <li class="keyboard__flat"> </li>
+        </ol>
+    </div>
+
 </template>
 
 <template name="currentNote">
