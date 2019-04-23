@@ -22,6 +22,51 @@ h1, h2, .beat_counter {
     border-bottom: solid 1px #8b5839;
 }
 
+    .notes {
+        display: flex;
+        flex-wrap: wrap;
+        position: absolute;
+        top: 50px;
+        right: 90px;
+        bottom: 38px;
+        left: 90px;
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+    }
+
+        .notes__note {
+            position: relative;
+            width: 25%;
+            padding: 0 9px 18px;
+        }
+
+        .notes__note-value {
+            position: absolute;
+            top: 0;
+            right: 9px;
+            bottom: 18px;
+            left: 9px;
+            background-color: #545454;
+            border-radius: 7px;
+            box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.6);
+        }
+
+        .notes__note.active .notes__note-value {
+            border: solid 5px #bb9669;
+        }
+
+        .notes__note-value--A,
+        .notes__note-value--B,
+        .notes__note-value--C,
+        .notes__note-value--D,
+        .notes__note-value--E,
+        .notes__note-value--F,
+        .notes__note-value--G,
+        .notes__note-value--H {
+            background-color: #fff;
+        }
+
 .buttons__wrapper {
     position: fixed;
     top: 37%;

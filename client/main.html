@@ -89,8 +89,11 @@
 </template>
 
 <template name="currentNote">
-    <div class="note note{{_id}} {{#if variableMatches nextNote _id}}active{{/if}}">
-        {{_id}} : {{value}}
-    </div>
+
+    <li class="notes__note notes__note--{{_id}} {{#if variableMatches nextNote _id}}active{{/if}}">
+        <span class="notes__note-value notes__note-value--{{value}}">
+        </span>
+    </li>
+
 </template>
 

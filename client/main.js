@@ -60,7 +60,8 @@ Tracker.autorun(function() {
                     nextNote = 0;
                 }
                 $('.nextNote').removeClass('nextNote');
-                let nextNoteSelector = '.note'+nextNote;
+                let nextNoteSelector = '.notes__note--' + nextNote;
+                console.log(nextNoteSelector);
                 $(nextNoteSelector).addClass('nextNote');
                 console.log('changed note sequence');
             }
