@@ -52,7 +52,18 @@ ul li::before {
 }
 .keyboardKey{
   float:left;
-  width:100px;
+  width:50px;
+  height:200px;
   margin-right:30px;
+  border:1px solid red;
+}
+.note{
+  padding:30px;
+}
+.note.active{
+  background:red;
+  color:#FFF;
+}
+.note.nextNote{
   border:1px solid red;
 }

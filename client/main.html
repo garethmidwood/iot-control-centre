@@ -33,9 +33,23 @@
 </template>
 
 <template name="keyboard">
-    {{#each currentNotes}}
-        {{> currentNote}}
-    {{/each}}
+    <p>nextNote: {{ nextNote }}</p>
+    <div class="notes-container">    
+        {{#each currentNotes}}
+            {{> currentNote}}
+        {{/each}}
+    </div>
+    <div class="controls-container">    
+        <button class="restart">
+            Restart
+        </button>
+        <button class="pause">
+            Pause
+        </button>
+        <button class="update sequence">
+            Send to flower
+        </button>
+    </div>
     <div class="keyboard">
         <button class="keyboardKey">A</button>
         <button class="keyboardKey">B</button>
@@ -50,7 +64,7 @@
 </template>
 
 <template name="currentNote">
-    <div class="note">
+    <div class="note note{{_id}} {{#if variableMatches nextNote _id}}active{{/if}}">
         {{_id}} : {{value}}
     </div>
 </template>

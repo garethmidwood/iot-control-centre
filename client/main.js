@@ -34,6 +34,14 @@ Tracker.autorun(function() {
                 setNewBeat(60000 / fields.value);
             }
         });
+
+        let noteSequencePointer = ConfigCollection.find({'_id':'noteSequencePointer'});
+        let noteSequencePointerHandle = noteSequencePointer.observeChanges({
+            changed: function (id, fields) {
+                console.log(id);
+                console.log(fields);
+            }
+        });
     }
     if (soundHandle.ready()) {
         let notes = SoundCollection.find();
@@ -47,6 +55,13 @@ Tracker.autorun(function() {
         let noteSequenceCollection = NoteSequenceCollection.find();
         let handle = noteSequenceCollection.observeChanges({
             changed: function (id, fields) {
+                let nextNote = parseInt(id) + 1;
+                if(nextNote == 8){
+                    nextNote = 0;
+                }
+                $('.nextNote').removeClass('nextNote');
+                let nextNoteSelector = '.note'+nextNote;
+                $(nextNoteSelector).addClass('nextNote');
                 console.log('changed note sequence');
             }
         });        
@@ -70,6 +85,24 @@ Template.beat_counter.helpers({
 Template.keyboard.helpers({
     currentNotes: function() {
         return NoteSequenceCollection.find({}, {sort: {_id: 1}});
+    },
+});
+
+Template.currentNote.helpers({
+    nextNote: function(){
+        var recordCollection = ConfigCollection.find({'_id':'noteSequencePointer'}).fetch();
+        var nextInSequence = 0;
+        recordCollection.forEach(function(index){
+            nextInSequence = index.value;
+        })
+        return nextInSequence;
+    },
+    variableMatches(var1,var2){
+        if(var1 == var2){
+            return true;
+        } else { 
+            return false;
+        }
     }
 });
 
@@ -131,20 +164,8 @@ function onBeat() {
     $('.beat_counter').toggleClass('pulse');
 }
 
-function clearSequence(){
-  musicSequence = {};
-  sequenceCounter = 0;
-  musicCounter = 0;
-  return true
-}
-
-function addNoteToSequence(note){
-  if(sequenceCounter == 8){
-    sequenceCounter = 0;
-  }
-  musicSequence[sequenceCounter] = note;
-  sequenceCounter++
-  console.log(musicSequence);
+function getSequenceCounter(){
+    return sequenceCounter;
 }
 
 

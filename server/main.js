@@ -3,7 +3,72 @@ import { Meteor } from 'meteor/meteor';
 var beatTimeout;
 var noteSequencePointer = 0;
 var nextInputSequencePointer = 0;
-
+var ledConfig = {
+  'A':{
+    'led':'0',
+    'colours':{
+      'r':255,
+      'g':76,
+      'b':77,
+    },
+  },
+  'B':{
+    'led':'1',
+    'colours':{
+      'r':255,
+      'g':143,
+      'b':5,
+    }
+  },
+  'C':{
+    'led':'2',
+    'colours': {
+      'r':250,
+      'g':197,
+      'b':33,
+    }
+  },
+  'D':{
+    'led':'3',
+    'colours': {
+      'r':78,
+      'g':219,
+      'b':19,
+    }
+  },
+  'E':{
+    'led':'4',
+    'colours': {
+      'r':53,
+      'g':198,
+      'b':253,
+    }
+  },
+  'F':{
+    'led':'5',
+    'colours': {
+      'r':108,
+      'g':117,
+      'b':255,
+    }
+  },
+  'G':{
+    'led':'6',
+    'colours': {
+      'r':191,
+      'g':30,
+      'b':255,
+    }
+  },
+  'H':{
+    'led':'7',
+    'colours': {
+      'r':254,
+      'g':37,
+      'b':144,
+    }
+  },
+}
 Meteor.publish("config", function() { return ConfigCollection.find({}); });
 
 Meteor.publish("devices", function() { return DevicesCollection.find({}); });
@@ -30,7 +95,6 @@ Meteor.publish("hue6", function() { return Hue6Collection.find({}); });
 
 
 Meteor.publish("sound", function() { return SoundCollection.find({}); });
-
 
 Meteor.onConnection(function (connection) {
    console.log("New DDP Connection:", connection.id);
@@ -70,10 +134,6 @@ Meteor.methods({
       addNoteToSequence(note);
       return note;
    },
-   'play_music': function(){
-      playMusic();
-      return 'sequence submitted';
-   }
 });
 
 
@@ -149,22 +209,26 @@ function onBeat() {
   if (noteSequencePointer == sequenceLength){
     noteSequencePointer = 0;
   }
-
   // find the note to play
-  console.log('Looking for note sequence at position ' + noteSequencePointer);
+  // console.log('Looking for note sequence at position ' + noteSequencePointer);
+  ConfigCollection.remove({});
+  ConfigCollection.insert({_id: 'noteSequencePointer',value:noteSequencePointer});
   var currentNote = NoteSequenceCollection.findOne({_id: noteSequencePointer.toString()});
-  console.log('currentNote.value is... ' + currentNote.value);
+  // console.log('currentNote.value is... ' + currentNote.value);
 
   // if there's a defined note then we'll play it
-  if (typeof currentNote.value != 'undefined'){
+  var nextToPlay = currentNote.value;
+  console.log(typeof nextToPlay);
+  if (currentNote.value){
+    console.log('playing'+currentNote.value);
     SoundCollection.remove({});
     SoundCollection.insert({notes: currentNote,instrument:'vibraphone'});
-    noteSequencePointer++;
+    // clear collections 
+    Led1Collection.remove({});
+    Led1Collection.insert(ledConfig[currentNote.value]);
   }
+  noteSequencePointer++;
 
-  // clear collections 
-  Led1Collection.remove({});
-  Led1Collection.insert({colour: "red"});
 }
 
 // Resets the 'beat' sequence outputs
