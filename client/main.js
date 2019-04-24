@@ -42,6 +42,8 @@ Tracker.autorun(function() {
                 console.log(fields);
             }
         });
+
+        Meteor.call('pause', 1);
     }
     if (soundHandle.ready()) {
         let notes = SoundCollection.find();
@@ -61,9 +63,7 @@ Tracker.autorun(function() {
                 }
                 $('.nextNote').removeClass('nextNote');
                 let nextNoteSelector = '.notes__note--' + nextNote;
-                console.log(nextNoteSelector);
                 $(nextNoteSelector).addClass('nextNote');
-                console.log('changed note sequence');
             }
         });        
     }
@@ -91,6 +91,10 @@ Template.keyboard.helpers({
 
 Template.currentNote.helpers({
     nextNote: function(){
+        if(isPaused()) {
+            return -1;
+        }
+
         var recordCollection = ConfigCollection.find({'_id':'noteSequencePointer'}).fetch();
         var nextInSequence = 0;
 
@@ -112,6 +116,9 @@ document.addEventListener('touchstart', function(event) {
     window.touchElement = event.target;
 
     if(event.target.classList.contains('keyboardKey')) {
+        if(!isPaused()) {
+            clearSequence();
+        }
         addToSequence(event.target.innerHTML);
         pressKey(event.target);
     }
@@ -157,7 +164,18 @@ function clearSequence(){
 }
 
 function sendToFlower(){
+    $('.nextNote').removeClass('nextNote');
     Meteor.call('play', 1);
+}
+
+function isPaused(){
+    var config = ConfigCollection.find({'_id':'isPaused'}).fetch();
+
+    if(typeof config[0] != 'undefined' && typeof config[0].value != 'undefined') {
+        return config[0].value;
+    }
+
+    return true;
 }
 
 

@@ -97,6 +97,7 @@ Meteor.publish("hue6", function() { return Hue6Collection.find({}); });
 
 Meteor.publish("sound", function() { return SoundCollection.find({}); });
 
+
 Meteor.onConnection(function (connection) {
    console.log("New DDP Connection:", connection.id);
 
@@ -137,9 +138,13 @@ Meteor.methods({
    },
    'pause': function() {
       paused = true;
+      ConfigCollection.remove({_id:'isPaused'});
+      ConfigCollection.insert({_id:'isPaused', value:paused});
    },
    'play': function() {
       paused = false;
+      ConfigCollection.remove({_id:'isPaused'});
+      ConfigCollection.insert({_id:'isPaused', value:paused});
    }
 });
 
@@ -224,7 +229,7 @@ function onBeat() {
   }
   // find the note to play
   // console.log('Looking for note sequence at position ' + noteSequencePointer);
-  ConfigCollection.remove({});
+  ConfigCollection.remove({_id: 'noteSequencePointer'});
   ConfigCollection.insert({_id: 'noteSequencePointer',value:noteSequencePointer});
   var currentNote = NoteSequenceCollection.findOne({_id: noteSequencePointer.toString()});
   // console.log('currentNote.value is... ' + currentNote.value);
