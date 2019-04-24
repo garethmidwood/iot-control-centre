@@ -93,52 +93,72 @@ Template.currentNote.helpers({
     nextNote: function(){
         var recordCollection = ConfigCollection.find({'_id':'noteSequencePointer'}).fetch();
         var nextInSequence = 0;
+
         recordCollection.forEach(function(index){
             nextInSequence = index.value;
-        })
+        });
+
         return nextInSequence;
     },
     variableMatches(var1,var2){
-        if(var1 == var2){
-            return true;
-        } else { 
-            return false;
-        }
+        return var1 == var2;
     }
 });
 
-/*
-Template.body.events({
-    'click button.reset'(event, instance) {
-        var options = DevicesCollection.find({});
+window.touchElement = null;
 
-        options.forEach(function(item) {
-            DevicesCollection.update(item._id, {$set: {votes: 0, winner: false}});
-        });
+document.addEventListener('touchstart', function(event) {
+    event.preventDefault();
+    window.touchElement = event.target;
+
+    if(event.target.classList.contains('keyboardKey')) {
+        addToSequence(event.target.innerHTML);
+        pressKey(event.target);
     }
-});
-*/
 
-Template.keyboard.events({
-    'click .keyboardKey'(event, instance) {
-        // increment the votes counter when button is clicked
-        addToSequence(event.currentTarget.innerHTML);
-
-    },
-    'click .clear'(event, instance) {
-        // increment the votes counter when button is clicked
+    if(event.target.classList.contains('clear')) {
         clearSequence();
     }
-});
+
+    if(event.target.classList.contains('send')) {
+        sendToFlower();
+    }
+
+}, { passive: false });
+
+document.addEventListener('touchmove', function(event) {
+    var actualTarget = document.elementFromPoint(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+
+    if(!actualTarget.isSameNode(window.touchElement)) {
+        window.touchElement = actualTarget;
+
+        if(actualTarget.classList.contains('keyboardKey')) {
+            addToSequence(actualTarget.innerHTML);
+            pressKey(actualTarget);
+        }
+    }
+}, { passive: false });
+
+function pressKey(keyElement) {
+    keyElement.classList.add('pressed');
+    setTimeout(function() {
+        keyElement.classList.remove('pressed');
+    }, 500);
+}
 
 function addToSequence(newNote){
+    Meteor.call('pause', 1);
     Meteor.call('add_to_sequence', newNote);
 }
+
 function clearSequence(){
     Meteor.call('clear_sequence',1);
+    Meteor.call('pause', 1);
 }
 
-
+function sendToFlower(){
+    Meteor.call('play', 1);
+}
 
 
 function setNewBeat(pulseRate) {

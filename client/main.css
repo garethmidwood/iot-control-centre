@@ -263,17 +263,20 @@ h1, h2, .beat_counter {
                 z-index: 1;
                 width: 100%;
                 height: 100%;
-                opacity: 0;
-                background-image: linear-gradient(#fff, #cfcfcf);
+                opacity: 0.1;
+                background-image: linear-gradient(#fff, #000);
+                border-radius: 7px;
                 transition: opacity 0.3s;
             }
 
-            .keyboard__key button:focus {
+            .keyboard__key button:focus,
+            .keyboard__key button:hover,
+            .keyboard__key button:active {
                 outline: none;
             }
 
-            .keyboard__key button:focus:before {
-                opacity: 1;
+            .keyboard__key button.pressed:before {
+                opacity: 0.3;
             }
 
             .keyboard__key button:after {
@@ -354,5 +357,5 @@ h1, h2, .beat_counter {
                     bottom: 9px;
                     left: 9px;
                     background-color: #2e2e2e;
-                    background-image: linear-gradient(#000, #2e2e2e);
+                    background-image: linear-gradient(#000, #4a4a4a);
                 }

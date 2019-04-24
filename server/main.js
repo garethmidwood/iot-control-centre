@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 var beatTimeout;
 var noteSequencePointer = 0;
 var nextInputSequencePointer = 0;
+var paused = true;
 var ledConfig = {
   'A':{
     'led':'0',
@@ -134,6 +135,12 @@ Meteor.methods({
       addNoteToSequence(note);
       return note;
    },
+   'pause': function() {
+      paused = true;
+   },
+   'play': function() {
+      paused = false;
+   }
 });
 
 
@@ -162,6 +169,10 @@ function resetConfigCollection() {
 function resetNoteSequenceCollection() {
     console.log('Resetting note sequence collection');
     noteSequencePointer = 0;
+    nextInputSequencePointer = 0;
+
+    ConfigCollection.remove({});
+    ConfigCollection.insert({_id: 'noteSequencePointer',value:noteSequencePointer});
 
     NoteSequenceCollection.remove({});
     // insert some defaults
@@ -191,7 +202,9 @@ function beat(pulseRate) {
     beatTimeout = Meteor.setTimeout(function () {
         console.log('beat at ' + pulseRate);
 
-        onBeat();
+        if(paused == false) {
+          onBeat();
+        }
 
         beat(pulseRate);
     }, pulseRate);
