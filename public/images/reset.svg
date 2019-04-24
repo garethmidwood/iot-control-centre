@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="57px" height="52px" viewBox="0 0 57 52" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>restart icon</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M179.422993,470.063478 C178.648551,468.825198 177.047213,468.411749 175.756477,469.133735 C174.465741,469.908177 174.104748,471.559906 174.879189,472.850642 C176.68622,475.793107 177.563507,479.304322 177.202514,483.073787 C176.428072,491.025753 169.87165,497.324545 161.919168,497.892985 C152.264979,498.564581 144.209754,490.820268 144.312496,481.318902 C144.415353,472.489236 151.64336,465.158372 160.473027,465.002967 L160.575883,465.002967 L160.575883,468.927631 C160.575883,470.063065 161.814164,470.787117 162.796362,470.165911 L173.380397,463.556827 C174.31014,462.988077 174.31014,461.64695 173.380397,461.078201 L162.849024,454.419036 C161.868891,453.799895 160.628545,454.521892 160.628545,455.657316 L160.628545,459.634383 C148.082075,459.737239 138.066994,470.373823 138.996842,483.125778 C139.771284,493.812555 148.392885,502.434156 159.079662,503.208598 C171.884279,504.188731 182.571057,494.018041 182.571057,481.42149 C182.623492,477.291135 181.435622,473.36833 179.422848,470.063014 L179.422993,470.063478 Z" id="path-1"></path>
+        <filter x="-13.8%" y="-12.2%" width="127.5%" height="124.4%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="0" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 1   0 0 0 0 1   0 0 0 0 1  0 0 0 0.281523164 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="iPad" transform="translate(-132.000000, -453.000000)">
+            <g id="restart-icon" transform="translate(160.754828, 478.732795) scale(-1, 1) rotate(-80.000000) translate(-160.754828, -478.732795) ">
+                <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                <use fill="#222222" fill-rule="evenodd" xlink:href="#path-1"></use>
+            </g>
+        </g>
+    </g>
+</svg>
