@@ -9,7 +9,7 @@ body {
     background-image: url('images/background.png');
 }
 
-h1, h2, .beat_counter {
+h1, h2, .beat_counter, #devices {
     display: none;
 }
 
