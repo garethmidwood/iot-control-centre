@@ -3,7 +3,6 @@ import { Meteor } from 'meteor/meteor';
 var beatTimeout;
 var noteSequencePointer = 0;
 var nextInputSequencePointer = 0;
-var paused = true;
 var ledConfig = {
   'A':{
     'led':'0',
@@ -243,7 +242,6 @@ function onBeat() {
     console.log('playing'+currentNote.value);
     // clear collections 
     Led1Collection.remove({});
-
     var submitData = {
       led:noteSequencePointer,
       colours:ledConfig[currentNote.value]['colours']
