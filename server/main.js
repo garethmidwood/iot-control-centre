@@ -134,6 +134,7 @@ Meteor.methods({
       // ConfigCollection.update({_id: 'bpm'}, {value: note});
       console.log(note);
       addNoteToSequence(note);
+      playNote({value:note});
       return note;
    },
    'pause': function() {
@@ -238,9 +239,8 @@ function onBeat() {
   var nextToPlay = currentNote.value;
   console.log(typeof nextToPlay);
   if (currentNote.value){
+    playNote(currentNote);
     console.log('playing'+currentNote.value);
-    SoundCollection.remove({});
-    SoundCollection.insert({notes: currentNote,instrument:'vibraphone'});
     // clear collections 
     Led1Collection.remove({});
     Led1Collection.insert(ledConfig[currentNote.value]);
@@ -265,4 +265,9 @@ function addNoteToSequence(note){
 
   NoteSequenceCollection.update({_id: nextInputSequencePointer.toString()}, {value: note});
   nextInputSequencePointer++
+}
+
+function playNote(note) {
+  SoundCollection.remove({});
+  SoundCollection.insert({notes: note,instrument:'vibraphone'});
 }
