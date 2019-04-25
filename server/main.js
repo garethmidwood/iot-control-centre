@@ -243,7 +243,13 @@ function onBeat() {
     console.log('playing'+currentNote.value);
     // clear collections 
     Led1Collection.remove({});
-    Led1Collection.insert(ledConfig[currentNote.value]);
+
+    var submitData = {
+      led:noteSequencePointer,
+      colours:ledConfig[currentNote.value]['colours']
+    }
+    console.log(submitData);
+    Led1Collection.insert(submitData);
   }
   noteSequencePointer++;
 
