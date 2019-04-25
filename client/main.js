@@ -120,15 +120,21 @@ document.addEventListener('touchstart', function(event) {
             clearSequence();
         }
         addToSequence(event.target.innerHTML);
-        pressKey(event.target);
+        pressButton(event.target);
     }
 
     if(event.target.classList.contains('clear')) {
         clearSequence();
+        pressButton(event.target);
     }
 
     if(event.target.classList.contains('send')) {
         sendToFlower();
+        pressButton(event.target);
+    }
+
+    if(event.target.classList.contains('send-scent')) {
+        pressButton(event.target);
     }
 
 }, { passive: false });
@@ -141,12 +147,12 @@ document.addEventListener('touchmove', function(event) {
 
         if(actualTarget.classList.contains('keyboardKey')) {
             addToSequence(actualTarget.innerHTML);
-            pressKey(actualTarget);
+            pressButton(actualTarget);
         }
     }
 }, { passive: false });
 
-function pressKey(keyElement) {
+function pressButton(keyElement) {
     keyElement.classList.add('pressed');
     setTimeout(function() {
         keyElement.classList.remove('pressed');
