@@ -275,5 +275,5 @@ function addNoteToSequence(note){
 
 function playNote(note) {
   SoundCollection.remove({});
-  SoundCollection.insert({notes: note,instrument:'piano'});
+  SoundCollection.insert({notes: note,instrument:'bells'});
 }
