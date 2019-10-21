@@ -4,27 +4,20 @@
 </head>
 
 <body>
-    {{> head}}
-
-    <h2>Devices online</h2>
-    <ul id="devices" class="col-{{devices.count}}">
-        {{#each devices}}
-            {{> device}}
-        {{/each}}
-    </ul>
-
-    {{> beat_counter}}
-    {{> keyboard}}
+    {{#if isAdmin}}
+        <h1>YOU ARE THE ADMIN</h1>
+        
+        {{> beat_counter}}
+        {{> beat_controls}}
+    {{else}}
+        {{> location_tiles}}
+    {{/if}}
 </body>
 
-<template name="head">
-    <h1>
-        Control Panel
-    </h1>
-</template>
+
 
 <template name="device">
-    <li class="online"><strong>{{deviceType}}:</strong> {{deviceName}}</li>
+    <li class="online"><strong>{{_id}}</strong></li>
 </template>
 
 <template name="beat_counter">
@@ -33,80 +26,24 @@
     </div>
 </template>
 
-<template name="keyboard">
-
-    <div class="notes__wrapper">
-        <ol class="notes">
-            {{#each currentNotes}}
-                {{> currentNote}}
-            {{/each}}
-        </ol>
+<template name="beat_controls">
+    <div class="beat_controls">
+        <button id="beat-control-play">PLAY</button>
+        <button id="beat-control-pause">PAUSE</button>
     </div>
-
-    <div class="buttons__wrapper">
-        <div class="buttons__button-wrapper buttons__button-wrapper--clear">
-            <button class="buttons__clear-button clear">
-                Reset/Clear
-            </button>
-        </div>
-        <div class="buttons__button-wrapper buttons__button-wrapper--send">
-            <button class="buttons__send-button send">
-                Melody
-            </button>
-        </div>
-        <div class="buttons__button-wrapper buttons__button-wrapper--send">
-            <button class="buttons__send-button send-scent">
-                Scent
-            </button>
-        </div>
-    </div>
-
-    <div class="keyboard__wrapper">
-        <div class="keyboard__logo-wrapper">
-            <img class="keyboard__logo" src="images/logo.png" alt="Creode" />
-        </div>
-        <ol class="keyboard__keys">
-            <li class="keyboard__key keyboard__key--A">
-                <button class="keyboardKey">A</button>
-            </li>
-            <li class="keyboard__flat"> </li>
-            <li class="keyboard__key keyboard__key--B">
-                <button class="keyboardKey">B</button>
-            </li>
-            <li class="keyboard__flat"> </li>
-            <li class="keyboard__key keyboard__key--C">
-                <button class="keyboardKey">C</button>
-            </li>
-            <li class="keyboard__key keyboard__key--D">
-                <button class="keyboardKey">D</button>
-            </li>
-            <li class="keyboard__flat"> </li>
-            <li class="keyboard__key keyboard__key--E">
-                <button class="keyboardKey">E</button>
-            </li>
-            <li class="keyboard__flat"> </li>
-            <li class="keyboard__key keyboard__key--F">
-                <button class="keyboardKey">F</button>
-            </li>
-            <li class="keyboard__flat"> </li>
-            <li class="keyboard__key keyboard__key--G">
-                <button class="keyboardKey">G</button>
-            </li>
-            <li class="keyboard__key keyboard__key--H">
-                <button class="keyboardKey">H</button>
-            </li>
-            <li class="keyboard__flat"> </li>
-        </ol>
-    </div>
-
 </template>
 
-<template name="currentNote">
 
-    <li class="notes__note notes__note--{{_id}} {{#if variableMatches nextNote _id}}active{{/if}}">
-        <span class="notes__note-value notes__note-value--{{value}}">
-        </span>
-    </li>
-
+<template name="location_tiles">
+    <ul id="location-tiles">
+        {{#each locations}}
+            {{> location}}
+        {{/each}}
+    </ul>
 </template>
+
+<template name="location">
+    <li><a href="#" data-position="{{_id}}">{{_id}} {{#if value}}yup{{/if}}</a></li>
+</template>
+
 

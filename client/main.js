@@ -1,17 +1,24 @@
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
+import { Session } from 'meteor/session';
 
 import './main.html';
 
 Meteor.subscribe('devices');
+Meteor.subscribe('locations');
+
 var configHandle = Meteor.subscribe("config");
 
 var beatTimeout;
 var beatInitialised = false;
 
-var soundHandle = Meteor.subscribe('sound');
+Session.setDefault('isAdmin', false);
 
-var noteSequenceHandle = Meteor.subscribe('noteSequence');
+
+
+
+
+
 
 Tracker.autorun(function() {
     if (configHandle.ready()) {
@@ -35,38 +42,33 @@ Tracker.autorun(function() {
             }
         });
 
-        let noteSequencePointer = ConfigCollection.find({'_id':'noteSequencePointer'});
-        let noteSequencePointerHandle = noteSequencePointer.observeChanges({
+        Meteor.call('is_admin', function(error, result) {
+            // 'result' is the method return value
+            Session.set('isAdmin', result);
+        });
+
+
+
+        let locations = LocationsCollection.find({});
+        let locationsHandle = locations.observeChanges({
             changed: function (id, fields) {
+                console.log('location changed');
                 console.log(id);
                 console.log(fields);
             }
         });
 
-        Meteor.call('pause', 1);
-    }
-    if (soundHandle.ready()) {
-        let notes = SoundCollection.find();
-        let handle = notes.observeChanges({
+        
+
+        let sequencePointer = ConfigCollection.find({_id: 'sequencePointer'});
+        let sequencePointerHandle = sequencePointer.observeChanges({
             changed: function (id, fields) {
-                
+                console.log(id);
+                console.log(fields);
             }
         });
     }
-    if (noteSequenceHandle.ready()) {
-        let noteSequenceCollection = NoteSequenceCollection.find();
-        let handle = noteSequenceCollection.observeChanges({
-            changed: function (id, fields) {
-                let nextNote = parseInt(id) + 1;
-                if(nextNote == 8){
-                    nextNote = 0;
-                }
-                $('.nextNote').removeClass('nextNote');
-                let nextNoteSelector = '.notes__note--' + nextNote;
-                $(nextNoteSelector).addClass('nextNote');
-            }
-        });        
-    }
+    
 });
 
 
@@ -74,6 +76,9 @@ Tracker.autorun(function() {
 Template.body.helpers({
     devices: function() {
         return DevicesCollection.find({}, {sort: {deviceType: 1, deviceName: 1}});
+    },
+    isAdmin: function() {
+        return Session.get('isAdmin');
     }
 });
 
@@ -83,96 +88,96 @@ Template.beat_counter.helpers({
     }
 });
 
-Template.keyboard.helpers({
-    currentNotes: function() {
-        return NoteSequenceCollection.find({}, {sort: {_id: 1}});
+
+Template.beat_controls.events({
+    'click button#beat-control-play': function() {
+        console.log("You clicked a play button element");
+        Meteor.call('play', 1);
     },
+    'click button#beat-control-pause': function() {
+        console.log("You clicked a pause button element");
+        Meteor.call('pause', 1);
+    }
+}); 
+
+
+
+Template.location_tiles.helpers({
+    locations: function() {
+        return LocationsCollection.find({});
+    }
 });
 
-Template.currentNote.helpers({
-    nextNote: function(){
-        if(isPaused()) {
-            return -1;
-        }
-
-        var recordCollection = ConfigCollection.find({'_id':'noteSequencePointer'}).fetch();
-        var nextInSequence = 0;
-
-        recordCollection.forEach(function(index){
-            nextInSequence = index.value;
+Template.location_tiles.events({
+    'click a': function(event) {
+        event.preventDefault();
+        
+        var position = $(event.target).data('position');
+        console.log("You clicked a tile element at position", position);
+        
+        Meteor.call('choose_location', position, function(error, result) {
+            // 'result' is the method return value
+            if (result) {
+                console.log('setting position to ' + position);
+                Session.set('position', result);
+            }
         });
-
-        return nextInSequence;
-    },
-    variableMatches(var1,var2){
-        return var1 == var2;
     }
 });
 
-window.touchElement = null;
 
-document.addEventListener('touchstart', function(event) {
-    event.preventDefault();
-    window.touchElement = event.target;
 
-    if(event.target.classList.contains('keyboardKey')) {
-        if(!isPaused()) {
-            clearSequence();
-        }
-        addToSequence(event.target.innerHTML);
-        pressButton(event.target);
-    }
+// Template.currentNote.helpers({
+//     nextNote: function(){
+//         if(isPaused()) {
+//             return -1;
+//         }
 
-    if(event.target.classList.contains('clear')) {
-        clearSequence();
-        pressButton(event.target);
-    }
+//         var recordCollection = ConfigCollection.find({'_id':'sequencePointer'}).fetch();
+//         var nextInSequence = 0;
 
-    if(event.target.classList.contains('send')) {
-        sendToFlower();
-        pressButton(event.target);
-    }
+//         recordCollection.forEach(function(index){
+//             nextInSequence = index.value;
+//         });
 
-    if(event.target.classList.contains('send-scent')) {
-        pressButton(event.target);
-    }
+//         return nextInSequence;
+//     },
+//     variableMatches(var1,var2){
+//         return var1 == var2;
+//     }
+// });
 
-}, { passive: false });
 
-document.addEventListener('touchmove', function(event) {
-    var actualTarget = document.elementFromPoint(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
 
-    if(!actualTarget.isSameNode(window.touchElement)) {
-        window.touchElement = actualTarget;
 
-        if(actualTarget.classList.contains('keyboardKey')) {
-            addToSequence(actualTarget.innerHTML);
-            pressButton(actualTarget);
-        }
-    }
-}, { passive: false });
 
-function pressButton(keyElement) {
-    keyElement.classList.add('pressed');
-    setTimeout(function() {
-        keyElement.classList.remove('pressed');
-    }, 500);
-}
-
-function addToSequence(newNote){
-    Meteor.call('pause', 1);
-    Meteor.call('add_to_sequence', newNote);
-}
 
 function clearSequence(){
     Meteor.call('clear_sequence',1);
     Meteor.call('pause', 1);
 }
 
-function sendToFlower(){
-    $('.nextNote').removeClass('nextNote');
-    Meteor.call('play', 1);
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function isPaused(){
     var config = ConfigCollection.find({'_id':'isPaused'}).fetch();
@@ -183,7 +188,6 @@ function isPaused(){
 
     return true;
 }
-
 
 function setNewBeat(pulseRate) {
     console.log('Setting new pulse rate to ' + pulseRate);
@@ -208,10 +212,3 @@ function beat(pulseRate) {
 function onBeat() {
     $('.beat_counter').toggleClass('pulse');
 }
-
-function getSequenceCounter(){
-    return sequenceCounter;
-}
-
-
-
