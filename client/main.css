@@ -42,8 +42,90 @@ body {
     height: 50px;
     font-size: 40px;
     line-height: 50px;
+    text-decoration: none;
 }
 
 #location-tiles li a:hover {
     background-color: #EEE;
+}
+
+#location-tiles li a.taken,
+#location-tiles li a.taken:hover {
+    opacity: 0.3;
+    background-color: #FFF;
+}
+
+#location-tiles li a.current,
+#location-tiles li a.current:hover {
+    background-color: blue;
+}
+
+
+div.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    text-align: center;
+
+    background-color: white;
+    -webkit-transition: background-color 1000ms linear;
+    -ms-transition: background-color 1000ms linear;
+    transition: background-color 1000ms li
+}
+
+div.active-position {
+    background-color: red;
+}
+
+h1.selected-position {
+    margin: 0;
+}
+
+
+
+
+
+
+
+
+
+
+#admin-view {
+    display: flex;
+    flex-flow: row wrap;
+    
+    align-items: stretch;
+    padding: 0;
+    margin: 0;
+}
+
+#admin-view div#admin-locations {
+    flex: 30%;
+    margin: 0;
+    padding: 10px;
+    text-align: center;
+}
+
+#admin-view div#admin-controls {
+    flex: 70%;
+    margin: 0;
+    padding: 10px;
+    text-align: center;
+}
+
+#admin-locations #location-tiles li a {
+    background-color: red;
+    color: white;
+}
+
+#admin-locations #location-tiles li a.taken,
+#admin-locations #location-tiles li a.taken:hover {
+    background-color: green;
+}
+
+#admin-locations #location-tiles li a.current,
+#admin-locations #location-tiles li a.current:hover {
+    background-color: blue;
 }

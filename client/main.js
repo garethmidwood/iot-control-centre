@@ -13,10 +13,12 @@ var beatTimeout;
 var beatInitialised = false;
 
 Session.setDefault('isAdmin', false);
+Session.setDefault('position', false);
 
-
-
-
+// super secure admin page
+if (window.location.pathname == '/admin') {
+    Session.set('isAdmin', true);
+}
 
 
 
@@ -41,34 +43,7 @@ Tracker.autorun(function() {
                 setNewBeat(60000 / fields.value);
             }
         });
-
-        Meteor.call('is_admin', function(error, result) {
-            // 'result' is the method return value
-            Session.set('isAdmin', result);
-        });
-
-
-
-        let locations = LocationsCollection.find({});
-        let locationsHandle = locations.observeChanges({
-            changed: function (id, fields) {
-                console.log('location changed');
-                console.log(id);
-                console.log(fields);
-            }
-        });
-
-        
-
-        let sequencePointer = ConfigCollection.find({_id: 'sequencePointer'});
-        let sequencePointerHandle = sequencePointer.observeChanges({
-            changed: function (id, fields) {
-                console.log(id);
-                console.log(fields);
-            }
-        });
     }
-    
 });
 
 
@@ -88,15 +63,24 @@ Template.beat_counter.helpers({
     }
 });
 
+Template.beat_controls.helpers({
+    isPaused: function() {
+        return ConfigCollection.findOne({_id:'isPaused'}).value;
+    }
+});
 
 Template.beat_controls.events({
     'click button#beat-control-play': function() {
         console.log("You clicked a play button element");
-        Meteor.call('play', 1);
+        Meteor.call('play');
     },
     'click button#beat-control-pause': function() {
         console.log("You clicked a pause button element");
-        Meteor.call('pause', 1);
+        Meteor.call('pause');
+    },
+    'click button#beat-control-reset': function() {
+        console.log("You clicked a reset button element");
+        Meteor.call('reset');
     }
 }); 
 
@@ -105,12 +89,44 @@ Template.beat_controls.events({
 Template.location_tiles.helpers({
     locations: function() {
         return LocationsCollection.find({});
+    },
+    positionSelected: function() {
+        console.log('position selected', Session.get('position'));
+        return Session.get('position');
+    },
+    positionIsActive: function() {
+        if (!ConfigCollection.findOne({_id: 'activePositions'})) {
+            return false;
+        }
+        
+        var isActive = false;
+
+        var currentPositions = ConfigCollection.findOne({_id: 'activePositions'});
+
+        currentPositions.values.forEach(function(item) {
+            // set the initial beat
+            if (Session.get('position') == item) {
+                isActive = true;
+            }
+        });
+
+        return isActive;
     }
 });
 
 Template.location_tiles.events({
     'click a': function(event) {
         event.preventDefault();
+
+        if ($(event.target).closest('#admin-locations').length > 0) {
+            console.log('admin cannot choose a location');
+            return;
+        }
+
+        if ($(event.target).hasClass('taken')) {
+            console.log('this location is already taken');
+            return;
+        }
         
         var position = $(event.target).data('position');
         console.log("You clicked a tile element at position", position);
@@ -119,75 +135,58 @@ Template.location_tiles.events({
             // 'result' is the method return value
             if (result) {
                 console.log('setting position to ' + position);
-                Session.set('position', result);
+                Session.set('position', position);
             }
         });
     }
 });
 
 
-
-// Template.currentNote.helpers({
-//     nextNote: function(){
-//         if(isPaused()) {
-//             return -1;
-//         }
-
-//         var recordCollection = ConfigCollection.find({'_id':'sequencePointer'}).fetch();
-//         var nextInSequence = 0;
-
-//         recordCollection.forEach(function(index){
-//             nextInSequence = index.value;
-//         });
-
-//         return nextInSequence;
-//     },
-//     variableMatches(var1,var2){
-//         return var1 == var2;
-//     }
-// });
+Template.location.helpers({
+    positionIsActive: function(positionToCheck) {
+        if (!ConfigCollection.findOne({_id: 'activePositions'})) {
+            console.log('no active positions on locations..');
+            return false;
+        }
 
 
+        var isActive = false;
 
+        var currentPositions = ConfigCollection.findOne({_id: 'activePositions'});
 
+        currentPositions.values.forEach(function(item) {
+            // set the initial beat
+            if (positionToCheck == item) {
+                isActive = true;
+            }
+        });
 
-
-function clearSequence(){
-    Meteor.call('clear_sequence',1);
-    Meteor.call('pause', 1);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function isPaused(){
-    var config = ConfigCollection.find({'_id':'isPaused'}).fetch();
-
-    if(typeof config[0] != 'undefined' && typeof config[0].value != 'undefined') {
-        return config[0].value;
+        return isActive;
     }
+});
 
-    return true;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function setNewBeat(pulseRate) {
     console.log('Setting new pulse rate to ' + pulseRate);

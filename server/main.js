@@ -1,9 +1,9 @@
 import { Meteor } from 'meteor/meteor';
 
 var beatTimeout;
-var sequencePointer = 0;
-var nextInputSequencePointer = 0;
 var paused = true;
+// var selectedSequence = 'single-regular';
+var selectedSequence = 'tiered';
 
 Meteor.publish("devices", function() { return DevicesCollection.find({}); });
 
@@ -48,10 +48,10 @@ Meteor.methods({
     
     if (locationData.value == null) {
       console.log('removing ', this.connection.id, ' from any existing locations');
-      LocationsCollection.update({value: this.connection.id}, {value: null});
+      LocationsCollection.update({value: this.connection.id}, { $set: { value: null } } );
 
       console.log('giving position ', theLocation, ' to ', this.connection.id);
-      LocationsCollection.update({_id: theLocation}, {value: this.connection.id});
+      LocationsCollection.update({_id: theLocation}, { $set: { value: this.connection.id } } );
       return true;
     } else {
       return false;
@@ -73,13 +73,16 @@ Meteor.methods({
   },
   'pause': function() {
     paused = true;
-    ConfigCollection.remove({_id:'isPaused'});
-    ConfigCollection.insert({_id:'isPaused', value:paused});
+    ConfigCollection.update({_id:'isPaused'}, {value: paused});
   },
   'play': function() {
     paused = false;
-    ConfigCollection.remove({_id:'isPaused'});
-    ConfigCollection.insert({_id:'isPaused', value:paused});
+    ConfigCollection.update({_id:'isPaused'}, {value: paused});
+  },
+  'reset': function() {
+    paused = true;
+    ConfigCollection.update({_id:'isPaused'}, {value: paused});
+    ConfigCollection.update({_id:'activePositions', values: [0]});
   }
 });
 
@@ -105,46 +108,48 @@ function resetConfigCollection() {
   ConfigCollection.remove({});
   ConfigCollection.insert({_id: 'bpm', value: 60});
   ConfigCollection.insert({_id: 'admin', value: null});
+  ConfigCollection.insert({_id: 'isPaused', value: true});
+  ConfigCollection.insert({_id: 'activePositions', values: [0]});
 }
 
 function resetLocationsCollection() {
   console.log('Resetting locations collection');
   LocationsCollection.remove({});
-  LocationsCollection.insert({_id: "1", value: null});
-  LocationsCollection.insert({_id: "2", value: null});
-  LocationsCollection.insert({_id: "3", value: null});
-  LocationsCollection.insert({_id: "4", value: null});
-  LocationsCollection.insert({_id: "5", value: null});
-  LocationsCollection.insert({_id: "6", value: null});
-  LocationsCollection.insert({_id: "7", value: null});
-  LocationsCollection.insert({_id: "8", value: null});
-  LocationsCollection.insert({_id: "9", value: null});
-  LocationsCollection.insert({_id: "10", value: null});
-  LocationsCollection.insert({_id: "11", value: null});
-  LocationsCollection.insert({_id: "12", value: null});
-  LocationsCollection.insert({_id: "13", value: null});
-  LocationsCollection.insert({_id: "14", value: null});
-  LocationsCollection.insert({_id: "15", value: null});
-  LocationsCollection.insert({_id: "16", value: null});
-  LocationsCollection.insert({_id: "17", value: null});
-  LocationsCollection.insert({_id: "18", value: null});
-  LocationsCollection.insert({_id: "19", value: null});
-  LocationsCollection.insert({_id: "20", value: null});
-  LocationsCollection.insert({_id: "21", value: null});
-  LocationsCollection.insert({_id: "22", value: null});
-  LocationsCollection.insert({_id: "23", value: null});
-  LocationsCollection.insert({_id: "24", value: null});
-  LocationsCollection.insert({_id: "25", value: null});
-  LocationsCollection.insert({_id: "26", value: null});
-  LocationsCollection.insert({_id: "27", value: null});
-  LocationsCollection.insert({_id: "28", value: null});
-  LocationsCollection.insert({_id: "29", value: null});
-  LocationsCollection.insert({_id: "30", value: null});
-  LocationsCollection.insert({_id: "31", value: null});
-  LocationsCollection.insert({_id: "32", value: null});
-  LocationsCollection.insert({_id: "33", value: null});
-  LocationsCollection.insert({_id: "34", value: null});
-  LocationsCollection.insert({_id: "35", value: null});
+  LocationsCollection.insert({_id: "1", tier: 1, value: null});
+  LocationsCollection.insert({_id: "2", tier: 1, value: null});
+  LocationsCollection.insert({_id: "3", tier: 1, value: null});
+  LocationsCollection.insert({_id: "4", tier: 1, value: null});
+  LocationsCollection.insert({_id: "5", tier: 1, value: null});
+  LocationsCollection.insert({_id: "6", tier: 1, value: null});
+  LocationsCollection.insert({_id: "7", tier: 1, value: null});
+  LocationsCollection.insert({_id: "8", tier: 1, value: null});
+  LocationsCollection.insert({_id: "9", tier: 1, value: null});
+  LocationsCollection.insert({_id: "10", tier: 1, value: null});
+  LocationsCollection.insert({_id: "11", tier: 1, value: null});
+  LocationsCollection.insert({_id: "12", tier: 1, value: null});
+  LocationsCollection.insert({_id: "13", tier: 1, value: null});
+  LocationsCollection.insert({_id: "14", tier: 1, value: null});
+  LocationsCollection.insert({_id: "15", tier: 1, value: null});
+  LocationsCollection.insert({_id: "16", tier: 1, value: null});
+  LocationsCollection.insert({_id: "17", tier: 1, value: null});
+  LocationsCollection.insert({_id: "18", tier: 1, value: null});
+  LocationsCollection.insert({_id: "19", tier: 1, value: null});
+  LocationsCollection.insert({_id: "20", tier: 1, value: null});
+  LocationsCollection.insert({_id: "21", tier: 2, value: null});
+  LocationsCollection.insert({_id: "22", tier: 2, value: null});
+  LocationsCollection.insert({_id: "23", tier: 2, value: null});
+  LocationsCollection.insert({_id: "24", tier: 2, value: null});
+  LocationsCollection.insert({_id: "25", tier: 2, value: null});
+  LocationsCollection.insert({_id: "26", tier: 2, value: null});
+  LocationsCollection.insert({_id: "27", tier: 2, value: null});
+  LocationsCollection.insert({_id: "28", tier: 2, value: null});
+  LocationsCollection.insert({_id: "29", tier: 2, value: null});
+  LocationsCollection.insert({_id: "30", tier: 2, value: null});
+  LocationsCollection.insert({_id: "31", tier: 3, value: null});
+  LocationsCollection.insert({_id: "32", tier: 3, value: null});
+  LocationsCollection.insert({_id: "33", tier: 3, value: null});
+  LocationsCollection.insert({_id: "34", tier: 3, value: null});
+  LocationsCollection.insert({_id: "35", tier: 3, value: null});
 }
 
 
@@ -166,7 +171,7 @@ function deviceOnline(connectionId) {
 
 function deviceOffline(connectionId) {
   DevicesCollection.remove( { _id: connectionId } );
-  LocationsCollection.remove( { value: connectionId } );
+  LocationsCollection.update({value: connectionId}, { $set: {value: null} });
 
   // if this is the admin, remove them from that config
   var adminConfig = ConfigCollection.findOne({_id: 'admin'});
@@ -203,21 +208,108 @@ function beat(pulseRate) {
 function onBeat() {
   // TODO: loop through devices on a cycle. 
   // needs a pointer per device type
-  console.log('onBeat - sequencePointer to trigger: ' + sequencePointer);
+  switch(selectedSequence) {
+    case 'tiered':
+      sequenceSingleRegularTiered();
+      break;
+    case 'single-regular':
+    default:
+      sequenceSingleRegular();
+  }
+}
 
-  var sequenceLength = DevicesCollection.find({}).count();
-  console.log('sequenceLength is ' + sequenceLength);
+
+
+
+/***
+ *
+ *  TODO: When changing the sequence, ALL pointers need to be reset
+ *
+ ***/
+
+
+
+function sequenceSingleRegular() {
+  var currentPointerValues = ConfigCollection.findOne({_id: 'activePositions'}).values;
+
+  console.log('Running single regular sequence, pointer values: ', currentPointerValues);
+
+  // there should only be one item, so use the first value in the array
+  currentPointer = currentPointerValues[0];
+
+  // increment it
+  currentPointer++;
+
+  // length of this sequence is the total number of locations
+  var sequenceLength = LocationsCollection.find({}).count();
 
   // reset note sequence pointer when it gets to the end of the sequence
-  if (sequencePointer == sequenceLength){
-    sequencePointer = 0;
+  if (currentPointer > sequenceLength){
+    currentPointer = 1;
   }
-  // find the note to play
-  // console.log('Looking for note sequence at position ' + sequencePointer);
-  ConfigCollection.remove({_id: 'sequencePointer'});
-  ConfigCollection.insert({_id: 'sequencePointer',value: sequencePointer});
+  
+  // update the active pointer
+  // we only have one active pointer at a time
+  ConfigCollection.update({_id: 'activePositions'}, {values: [currentPointer]});
+}
 
-  sequencePointer++;
+
+
+
+// runs a regular pattern independently for each tier
+function sequenceSingleRegularTiered() {
+  var currentPointerValues = ConfigCollection.findOne({_id: 'activePositions'}).values;
+
+  console.log('Running single regular tiered sequence, pointer values: ', currentPointerValues);
+
+  // if we're starting from scratch we'll have a single '0' position,
+  // we need to replace it with one for each tier
+  if (currentPointerValues.length != 3) {
+    currentPointerValues = [0,0,0];
+  }
+
+  // get the next steps for each tier
+  var tier1Pointer = getTierNextStep(1, currentPointerValues[0]);
+  var tier2Pointer = getTierNextStep(2, currentPointerValues[1]);
+  var tier3Pointer = getTierNextStep(3, currentPointerValues[2]);
+  
+  // update the active pointer
+  // we only have one active pointer at a time
+  ConfigCollection.update({_id: 'activePositions'}, {values: [tier1Pointer, tier2Pointer, tier3Pointer]});
+}
+
+function getTierNextStep(tierNumber, tierCurrentPosition) {
+  // increment it
+  tierPosition = tierCurrentPosition + 1;
+
+  // get all locations in this tier
+  var locationsInTier = LocationsCollection.find( {tier: tierNumber} );
+
+  // unfortunately the _id keys are strings so a normal sort doesn't work
+  // instead we have to manually pull out the values
+  var minLocation = 999999;
+  var maxLocation = -1;
+
+  locationsInTier.forEach(function(item) {
+    var intId = parseInt(item._id);
+    
+    if (intId < minLocation) {
+      minLocation = intId;
+    }
+
+    if (intId > maxLocation) {
+      maxLocation = intId;
+    }
+  });
+
+  // reset note sequence pointer when it gets to the end of the sequence
+  if (tierPosition > maxLocation || tierPosition < minLocation){
+    tierPosition = minLocation;
+  }
+
+  console.log('previous', tierCurrentPosition, 'new', tierPosition, 'min', minLocation, 'max', maxLocation);
+
+  return tierPosition;
 }
 
 

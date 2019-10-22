@@ -1,14 +1,13 @@
 <head>
   <title>Control Centre</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+  <script type="text/javascript" src="js/fitty.min.js"></script>
 </head>
 
 <body>
     {{#if isAdmin}}
-        <h1>YOU ARE THE ADMIN</h1>
-        
-        {{> beat_counter}}
-        {{> beat_controls}}
+        {{> admin_view}}
     {{else}}
         {{> location_tiles}}
     {{/if}}
@@ -28,22 +27,65 @@
 
 <template name="beat_controls">
     <div class="beat_controls">
-        <button id="beat-control-play">PLAY</button>
-        <button id="beat-control-pause">PAUSE</button>
+        {{#if isPaused}}
+            <button id="beat-control-play">PLAY</button>
+        {{else}}
+            <button id="beat-control-pause">PAUSE</button>
+        {{/if}}
+
+        <button id="beat-control-reset">RESET</button>
     </div>
 </template>
 
 
 <template name="location_tiles">
-    <ul id="location-tiles">
-        {{#each locations}}
-            {{> location}}
-        {{/each}}
-    </ul>
+    {{#if positionSelected}}
+        <div class="fullscreen {{#if positionIsActive}}active-position{{/if}}">
+            <h1 class="selected-position">{{positionSelected}}</h1>
+            <script>
+                fitty('h1.selected-position');
+            </script>
+        </div>
+    {{else}}
+        <ul id="location-tiles">
+            {{#each locations}}
+                {{> location}}
+            {{/each}}
+        </ul>
+    {{/if}}
 </template>
 
 <template name="location">
-    <li><a href="#" data-position="{{_id}}">{{_id}} {{#if value}}yup{{/if}}</a></li>
+    <li><a href="#" class="{{#if value}}taken{{/if}} {{#if positionIsActive (_id)}}current{{/if}}" data-position="{{_id}}">{{_id}}</a></li>
 </template>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<template name="admin_view">
+    <div id="admin-view">
+        <div id="admin-locations">
+            {{> location_tiles}} 
+        </div>
+        <div id="admin-controls">    
+            <h1>ADMIN CONTROLS</h1>
+
+            {{> beat_counter}}
+            {{> beat_controls}}
+        </div>
+    </div>   
+</template>
 
