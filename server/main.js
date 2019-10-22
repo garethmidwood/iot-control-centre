@@ -82,7 +82,7 @@ Meteor.methods({
   'reset': function() {
     paused = true;
     ConfigCollection.update({_id:'isPaused'}, {value: paused});
-    ConfigCollection.update({_id:'activePositions', values: [0]});
+    ConfigCollection.update({_id:'activePositions'}, { values: [0]});
   }
 });
 

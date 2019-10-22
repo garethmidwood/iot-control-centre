@@ -64,7 +64,7 @@ Template.beat_counter.helpers({
 });
 
 Template.beat_controls.helpers({
-    isPaused: function() {
+    sequenceIsPaused: function() {
         return ConfigCollection.findOne({_id:'isPaused'}).value;
     }
 });
@@ -111,6 +111,9 @@ Template.location_tiles.helpers({
         });
 
         return isActive;
+    },
+    sequenceIsPaused: function() {
+        return ConfigCollection.findOne({_id:'isPaused'}).value;
     }
 });
 

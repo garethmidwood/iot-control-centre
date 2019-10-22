@@ -3,6 +3,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
   <script type="text/javascript" src="js/fitty.min.js"></script>
+  <script type="text/javascript" src="js/nosleep.min.js"></script>
+
+  <script>
+    var noSleep = new NoSleep();
+
+    document.addEventListener('click', function enableNoSleep() {
+        document.removeEventListener('click', enableNoSleep, false);
+        noSleep.enable();
+    }, false);
+  </script>
 </head>
 
 <body>
@@ -27,7 +37,7 @@
 
 <template name="beat_controls">
     <div class="beat_controls">
-        {{#if isPaused}}
+        {{#if sequenceIsPaused}}
             <button id="beat-control-play">PLAY</button>
         {{else}}
             <button id="beat-control-pause">PAUSE</button>
@@ -41,10 +51,12 @@
 <template name="location_tiles">
     {{#if positionSelected}}
         <div class="fullscreen {{#if positionIsActive}}active-position{{/if}}">
-            <h1 class="selected-position">{{positionSelected}}</h1>
-            <script>
-                fitty('h1.selected-position');
-            </script>
+            {{#if sequenceIsPaused}}
+                <h1 class="selected-position">{{positionSelected}}</h1>
+                <script>
+                    fitty('h1.selected-position');
+                </script>
+            {{/if}}
         </div>
     {{else}}
         <ul id="location-tiles">
