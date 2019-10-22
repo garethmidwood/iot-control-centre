@@ -81,7 +81,11 @@ Template.beat_controls.events({
     'click button#beat-control-reset': function() {
         console.log("You clicked a reset button element");
         Meteor.call('reset');
-    }
+    },
+    'click button#beat-control-disconnect': function() {
+        console.log("You clicked a disconnect button element");
+        Meteor.call('disconnect');
+    },
 }); 
 
 

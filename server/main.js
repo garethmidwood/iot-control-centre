@@ -35,11 +35,6 @@ Meteor.onConnection(function (connection) {
 
 
 Meteor.methods({
-  'is_admin': function() {
-    var adminConfig = ConfigCollection.findOne({_id: 'admin'});
-
-    return adminConfig.value == this.connection.id;
-  },
   'choose_location': function(location) {
     var theLocation = location.toString();
     console.log('choosing location ', theLocation);
@@ -66,11 +61,6 @@ Meteor.methods({
     setNewBeat(pulseRate);
     return 'beat is now ' + beat;
   },
-  'clear_sequence': function(){
-    // ConfigCollection.update({_id: 'bpm'}, {value: note});
-    clearBeatSequences();
-    return 'cleared_sequence';
-  },
   'pause': function() {
     paused = true;
     ConfigCollection.update({_id:'isPaused'}, {value: paused});
@@ -80,6 +70,11 @@ Meteor.methods({
     ConfigCollection.update({_id:'isPaused'}, {value: paused});
   },
   'reset': function() {
+    paused = true;
+    ConfigCollection.update({_id:'isPaused'}, {value: paused});
+    ConfigCollection.update({_id:'activePositions'}, { values: [0]});
+  },
+  'disconnect': function() {
     paused = true;
     ConfigCollection.update({_id:'isPaused'}, {value: paused});
     ConfigCollection.update({_id:'activePositions'}, { values: [0]});
@@ -107,7 +102,6 @@ function resetConfigCollection() {
   console.log('Resetting config collection');
   ConfigCollection.remove({});
   ConfigCollection.insert({_id: 'bpm', value: 60});
-  ConfigCollection.insert({_id: 'admin', value: null});
   ConfigCollection.insert({_id: 'isPaused', value: true});
   ConfigCollection.insert({_id: 'activePositions', values: [0]});
 }
@@ -156,29 +150,11 @@ function resetLocationsCollection() {
 
 function deviceOnline(connectionId) {
   DevicesCollection.insert( { _id: connectionId } );
-
-  // if there is no admin, make this user the admin
-  var adminConfig = ConfigCollection.findOne({_id: 'admin'});
-  
-  if (!adminConfig.value) {
-    console.log('adding admin ' + connectionId);
-    ConfigCollection.update({_id: 'admin'}, {value: connectionId});
-    adminConfig = ConfigCollection.findOne({_id: 'admin'});
-  }
-
-  console.log('admin is ' + adminConfig.value);
 }
 
 function deviceOffline(connectionId) {
   DevicesCollection.remove( { _id: connectionId } );
   LocationsCollection.update({value: connectionId}, { $set: {value: null} });
-
-  // if this is the admin, remove them from that config
-  var adminConfig = ConfigCollection.findOne({_id: 'admin'});
-  if (adminConfig.value == connectionId) {
-    console.log('removing admin ' + connectionId);
-    ConfigCollection.update({_id: 'admin'}, {value: null});
-  }
 }
 
 
