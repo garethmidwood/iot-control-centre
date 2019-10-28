@@ -91,7 +91,11 @@ div.fullscreen {
 
 
 h1.selected-position {
-    margin: 0;
+    font-size: 50px;
+    line-height: 50px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
     color: white;
 }
 

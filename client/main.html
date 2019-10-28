@@ -87,13 +87,13 @@
     <button id="select-sequence-all">All</button>
 
     <h3>Tiered Sequence Graphics</h3>
-    <button id="sequence-control-graphics-abstract1">Abstract 1</button>
-    <button id="sequence-control-graphics-abstract2">Abstract 2</button>
-    <button id="sequence-control-graphics-abstract3">Abstract 3</button>
+    <button id="sequence-control-graphics-abstract1">Blinds</button>
+    <button id="sequence-control-graphics-abstract2">Bubbles</button>
+    <button id="sequence-control-graphics-abstract3">RGB Swish</button>
     <br/>
-    <button id="sequence-control-graphics-abstract4">Abstract 4</button>
-    <button id="sequence-control-graphics-abstract5">Abstract 5</button>
-    <button id="sequence-control-graphics-abstract6">Abstract 6</button>
+    <button id="sequence-control-graphics-abstract4">Fireworks</button>
+    <button id="sequence-control-graphics-abstract5">Fill</button>
+    <button id="sequence-control-graphics-abstract6">Lettering</button>
     <br/>
     <button id="sequence-control-graphics-colour1">Blue</button>
     <button id="sequence-control-graphics-colour2">Orange</button>
@@ -102,8 +102,8 @@
     <button id="sequence-control-graphics-colour4">Red</button>
     <button id="sequence-control-graphics-colour5">White</button>
     <br/>
-    <button id="sequence-control-graphics-logo1">Logo 1</button>
-    <button id="sequence-control-graphics-logo2">Logo 2</button>
+    <button id="sequence-control-graphics-logo1">Lightshow Logo</button>
+    <button id="sequence-control-graphics-logo2">Sliding Logo</button>
 
 </template>
 
@@ -112,9 +112,6 @@
         <div class="fullscreen {{#if positionIsActive}}active-position{{/if}}">
             {{#if sequenceIsPaused}}
                 <h1 class="selected-position">{{positionSelected}}</h1>
-                <script>
-                    fitty('h1.selected-position');
-                </script>
             {{/if}}
 
             {{#if positionIsActive}}
