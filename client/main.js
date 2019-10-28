@@ -11,7 +11,6 @@ Meteor.subscribe('locations');
 var configHandle = Meteor.subscribe("config");
 
 var beatTimeout;
-var beatInitialised = false;
 
 Session.setDefault('isAdmin', false);
 
@@ -24,31 +23,6 @@ if (window.location.pathname == '/admin') {
 
 
 
-Tracker.autorun(function() {
-    if (configHandle.ready()) {
-        // this will only ever return one record
-        // so we can foreach it but treat like one record
-        let query = ConfigCollection.find({_id: 'bpm'});
-
-        if (!beatInitialised) {
-            query.forEach(function(item) {
-                // set the initial beat
-                setNewBeat(60000 / item.value);
-            });
-
-            beatInitialised = true;
-        }
-
-        // we'll update the beat if the bpm config value changes
-        let handle = query.observeChanges({
-            changed: function (id, fields) {
-                setNewBeat(60000 / fields.value);
-            }
-        });
-    }
-});
-
-
 
 Template.body.helpers({
     devices: function() {
@@ -58,16 +32,6 @@ Template.body.helpers({
         return Session.get('isAdmin');
     }
 });
-
-
-
-
-Template.beat_counter.helpers({
-    config: function() {
-        return ConfigCollection.findOne({_id: 'bpm'});
-    }
-});
-
 
 
 
@@ -112,6 +76,80 @@ Template.beat_controls.events({
         console.log("You clicked a disconnect button element");
         Meteor.call('disconnect');
     },
+}); 
+
+
+
+Template.sequence_controls.events({
+    'click button#sequence-control-single': function() {
+        console.log("You clicked sequence-control-single");
+        Meteor.call('select-sequence-single');
+    },
+    'click button#sequence-control-tiered': function() {
+        console.log("You clicked sequence-control-tiered");
+        Meteor.call('select-sequence-tiered');
+    },
+    'click button#select-sequence-all': function() {
+        console.log("You clicked select-sequence-all");
+        Meteor.call('select-sequence-all');
+    },
+
+
+
+    'click button#sequence-control-graphics-abstract1': function() {
+        console.log("You clicked sequence-control-graphics-abstract1");
+        Meteor.call('set-graphic-abstract1');
+    },
+    'click button#sequence-control-graphics-abstract2': function() {
+        console.log("You clicked sequence-control-graphics-abstract2");
+        Meteor.call('set-graphic-abstract2');
+    },
+    'click button#sequence-control-graphics-abstract3': function() {
+        console.log("You clicked sequence-control-graphics-abstract3");
+        Meteor.call('set-graphic-abstract3');
+    },
+    'click button#sequence-control-graphics-abstract4': function() {
+        console.log("You clicked sequence-control-graphics-abstract4");
+        Meteor.call('set-graphic-abstract4');
+    },
+    'click button#sequence-control-graphics-abstract5': function() {
+        console.log("You clicked sequence-control-graphics-abstract5");
+        Meteor.call('set-graphic-abstract5');
+    },
+    'click button#sequence-control-graphics-abstract6': function() {
+        console.log("You clicked sequence-control-graphics-abstract6");
+        Meteor.call('set-graphic-abstract6');
+    },
+
+    'click button#sequence-control-graphics-logo1': function() {
+        console.log("You clicked sequence-control-graphics-logo1");
+        Meteor.call('set-graphic-logo1');
+    },
+    'click button#sequence-control-graphics-logo2': function() {
+        console.log("You clicked sequence-control-graphics-logo2");
+        Meteor.call('set-graphic-logo2');
+    },
+
+    'click button#sequence-control-graphics-colour1': function() {
+        console.log("You clicked sequence-control-graphics-colour1");
+        Meteor.call('set-graphic-colour1');
+    },
+    'click button#sequence-control-graphics-colour2': function() {
+        console.log("You clicked sequence-control-graphics-colour2");
+        Meteor.call('set-graphic-colour2');
+    },
+    'click button#sequence-control-graphics-colour3': function() {
+        console.log("You clicked sequence-control-graphics-colour3");
+        Meteor.call('set-graphic-colour3');
+    },
+    'click button#sequence-control-graphics-colour4': function() {
+        console.log("You clicked sequence-control-graphics-colour4");
+        Meteor.call('set-graphic-colour4');
+    },
+    'click button#sequence-control-graphics-colour5': function() {
+        console.log("You clicked sequence-control-graphics-colour5");
+        Meteor.call('set-graphic-colour5');
+    }
 }); 
 
 
@@ -173,6 +211,13 @@ Template.location_tiles.helpers({
         }
 
         return ConfigCollection.findOne({_id:'isPaused'}).value;
+    },
+    selectedGraphic: function() {
+        if (!ConfigCollection.findOne({_id:'selectedGraphic'})) {
+            return true;
+        }
+
+        return ConfigCollection.findOne({_id:'selectedGraphic'}).value;
     }
 });
 
@@ -231,40 +276,3 @@ Template.location.helpers({
     }
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function setNewBeat(pulseRate) {
-    console.log('Setting new pulse rate to ' + pulseRate);
-    Meteor.clearTimeout(beatTimeout);
-
-    // set the beat counter transition rate to match the beat rate
-    var animationPulseRate = pulseRate > 1000 ? 1000 : pulseRate;
-    console.log('beat counter animation running at ' + animationPulseRate);
-    $('.beat_counter').css("transition", "background-color " + animationPulseRate + "ms linear");
-
-    beat(pulseRate);
-}
-
-function beat(pulseRate) {
-    beatTimeout = Meteor.setTimeout(function () {
-        onBeat();
-
-        beat(pulseRate);
-    }, pulseRate);
-}
-
-function onBeat() {
-    $('.beat_counter').toggleClass('pulse');
-}

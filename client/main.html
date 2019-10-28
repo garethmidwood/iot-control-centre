@@ -62,12 +62,6 @@
     <li class="online"><strong>{{_id}}</strong></li>
 </template>
 
-<template name="beat_counter">
-    <div class="beat_counter">
-        <span>{{config.value}}</span>bpm
-    </div>
-</template>
-
 <template name="beat_controls">
     <div class="beat_controls">
         {{#if sequenceIsPaused}}
@@ -86,6 +80,32 @@
     </div>
 </template>
 
+<template name="sequence_controls">
+    <h3>Sequence Controls</h3>
+    <button id="sequence-control-single">Single Ticker</button>
+    <button id="sequence-control-tiered">Tiered Ticker</button>
+    <button id="select-sequence-all">All</button>
+
+    <h3>Tiered Sequence Graphics</h3>
+    <button id="sequence-control-graphics-abstract1">Abstract 1</button>
+    <button id="sequence-control-graphics-abstract2">Abstract 2</button>
+    <button id="sequence-control-graphics-abstract3">Abstract 3</button>
+    <br/>
+    <button id="sequence-control-graphics-abstract4">Abstract 4</button>
+    <button id="sequence-control-graphics-abstract5">Abstract 5</button>
+    <button id="sequence-control-graphics-abstract6">Abstract 6</button>
+    <br/>
+    <button id="sequence-control-graphics-colour1">Blue</button>
+    <button id="sequence-control-graphics-colour2">Orange</button>
+    <button id="sequence-control-graphics-colour3">Pink</button>
+    <br/>
+    <button id="sequence-control-graphics-colour4">Red</button>
+    <button id="sequence-control-graphics-colour5">White</button>
+    <br/>
+    <button id="sequence-control-graphics-logo1">Logo 1</button>
+    <button id="sequence-control-graphics-logo2">Logo 2</button>
+
+</template>
 
 <template name="location_tiles">
     {{#if positionSelected}}
@@ -98,12 +118,7 @@
             {{/if}}
 
             {{#if positionIsActive}}
-                <!-- Set the gif duration in server main.js in the startup func -->
-                <!-- <div class="fullscreen abstract1"></div> -->
-                <!-- <div class="fullscreen abstract2"></div> -->
-                <!-- <div class="fullscreen abstract3"></div> -->
-                <div class="fullscreen logo1"></div>
-                <!-- <div class="fullscreen logo2"></div> -->
+                <div class="fullscreen {{selectedGraphic}}"></div>
             {{/if}}
         </div>
     {{else}}
@@ -143,7 +158,6 @@
         <div id="admin-controls">    
             <h1>ADMIN CONTROLS</h1>
 
-            {{> beat_counter}}
             {{> beat_controls}}
             {{> sequence_controls}}
         </div>

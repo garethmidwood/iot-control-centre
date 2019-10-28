@@ -13,7 +13,7 @@
 
 body {
     margin: 0;
-    background: white;
+    background: black;
 }
 
 a.fullscreen {
@@ -54,6 +54,7 @@ a.fullscreen {
     font-size: 40px;
     line-height: 100px;
     text-decoration: none;
+    color: white;
 }
 
 #location-tiles li a:hover {
@@ -88,12 +89,10 @@ div.fullscreen {
     transition: background-color 1000ms li
 }
 
-div.active-position {
-    background-color: black;
-}
 
 h1.selected-position {
     margin: 0;
+    color: white;
 }
 
 
@@ -119,6 +118,37 @@ div.abstract3 {
     background-image: url(images/abstract3.gif);
 }
 
+div.abstract4 {
+    background-image: url(images/abstract4.gif);
+}
+
+div.abstract5 {
+    background-image: url(images/fill.gif);
+}
+
+div.abstract6 {
+    background-image: url(images/H.gif);
+}
+
+div.colour1 {
+    background-image: url(images/blue.gif);
+}
+
+div.colour2 {
+    background-image: url(images/orange.gif);
+}
+
+div.colour3 {
+    background-image: url(images/pink.gif);
+}
+
+div.colour4 {
+    background-image: url(images/red.gif);
+}
+
+div.colour5 {
+    background-image: url(images/white.gif);
+}
 
 
 

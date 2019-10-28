@@ -2,9 +2,7 @@ import { Meteor } from 'meteor/meteor';
 
 var beatTimeout;
 var paused = true;
-// var selectedSequence = 'single-regular';
-var selectedSequence = 'tiered';
-// var selectedSequence = 'ticker';
+
 
 Meteor.publish("devices", function() { return DevicesCollection.find({}); });
 
@@ -53,15 +51,6 @@ Meteor.methods({
       return false;
     }
   },
-  'set_beat': function(beat) {
-    console.log('submitted beat of ' + beat);
-    ConfigCollection.update({_id: 'bpm'}, {value: beat});
-
-    var pulseRate = 60000 / beat;
-
-    setNewBeat(pulseRate);
-    return 'beat is now ' + beat;
-  },
   'pause': function() {
     paused = true;
     ConfigCollection.update({_id:'isPaused'}, {value: paused});
@@ -80,8 +69,112 @@ Meteor.methods({
     ConfigCollection.update({_id:'isPaused'}, {value: paused});
     ConfigCollection.update({_id:'activePositions'}, { values: [0]});
     resetLocationsCollection();
+  },
+
+
+
+
+  'select-sequence-single': function() {
+    console.log('switching to single sequence');
+    paused = true;
+    ConfigCollection.update({_id:'isPaused'}, {value: paused});   
+    ConfigCollection.update({_id:'selectedSequence'}, { value: 'single-regular'});
+  },
+  'select-sequence-tiered': function() {
+    console.log('switching to tiered sequence');
+    paused = true;
+    ConfigCollection.update({_id:'isPaused'}, {value: paused});   
+    ConfigCollection.update({_id:'selectedSequence'}, { value: 'tiered'});
+  },
+  'select-sequence-ticker': function() {
+    console.log('switching to ticker sequence');
+    paused = true;
+    ConfigCollection.update({_id:'isPaused'}, {value: paused});   
+    ConfigCollection.update({_id:'selectedSequence'}, { value: 'ticker'});
+  },
+  'select-sequence-all': function() {
+    console.log('switching to "all" sequence');
+    paused = true;
+    ConfigCollection.update({_id:'isPaused'}, {value: paused});   
+    ConfigCollection.update({_id:'selectedSequence'}, { value: 'all'});
+  },
+
+    // beats for different gifs:
+    // GIF durations:
+    // abstract1.gif: 3390 milliseconds
+    // abstract2.gif: 4050 milliseconds
+    // abstract3.gif: 1140 milliseconds
+    // Logo-1.gif: 1830 milliseconds
+    // logo-2.gif: 3180 milliseconds
+
+  'set-graphic-abstract1': function() {
+    console.log('switching to graphic abstract1');
+    ConfigCollection.update({_id:'selectedGraphic'}, { value: 'abstract1'});
+    setNewBeat(3390);
+  },
+  'set-graphic-abstract2': function() {
+    console.log('switching to graphic abstract2');
+    ConfigCollection.update({_id:'selectedGraphic'}, { value: 'abstract2'});
+    setNewBeat(4050);
+  },
+  'set-graphic-abstract3': function() {
+    console.log('switching to graphic abstract3');
+    ConfigCollection.update({_id:'selectedGraphic'}, { value: 'abstract3'});
+    setNewBeat(1140);
+  },
+  'set-graphic-abstract4': function() {
+    console.log('switching to graphic abstract4');
+    ConfigCollection.update({_id:'selectedGraphic'}, { value: 'abstract4'});
+    setNewBeat(6750);
+  },
+  'set-graphic-abstract5': function() {
+    console.log('switching to graphic abstract5');
+    ConfigCollection.update({_id:'selectedGraphic'}, { value: 'abstract5'});
+    setNewBeat(4800);
+  },
+  'set-graphic-abstract6': function() {
+    console.log('switching to graphic abstract6');
+    ConfigCollection.update({_id:'selectedGraphic'}, { value: 'abstract6'});
+    setNewBeat(2820);
+  },
+  'set-graphic-logo1': function() {
+    console.log('switching to graphic logo1');
+    ConfigCollection.update({_id:'selectedGraphic'}, { value: 'logo1'});
+    setNewBeat(1830);
+  },
+  'set-graphic-logo2': function() {
+    console.log('switching to graphic logo2');
+    ConfigCollection.update({_id:'selectedGraphic'}, { value: 'logo2'});
+    setNewBeat(3300);
+  },
+  'set-graphic-colour1': function() {
+    console.log('switching to graphic colour1');
+    ConfigCollection.update({_id:'selectedGraphic'}, { value: 'colour1'});
+    setNewBeat(1880);
+  },
+  'set-graphic-colour2': function() {
+    console.log('switching to graphic colour2');
+    ConfigCollection.update({_id:'selectedGraphic'}, { value: 'colour2'});
+    setNewBeat(1880);
+  },
+  'set-graphic-colour3': function() {
+    console.log('switching to graphic colour3');
+    ConfigCollection.update({_id:'selectedGraphic'}, { value: 'colour3'});
+    setNewBeat(1880);
+  },
+  'set-graphic-colour4': function() {
+    console.log('switching to graphic colour4');
+    ConfigCollection.update({_id:'selectedGraphic'}, { value: 'colour4'});
+    setNewBeat(1880);
+  },
+  'set-graphic-colour5': function() {
+    console.log('switching to graphic colour5');
+    ConfigCollection.update({_id:'selectedGraphic'}, { value: 'colour5'});
+    setNewBeat(1880);
   }
 });
+
+
 
 
 Meteor.startup(() => {
@@ -90,15 +183,9 @@ Meteor.startup(() => {
     resetConfigCollection();
     resetLocationsCollection();
 
-    // default beat - 1second = 1000
-    beat(1830); 
-    // beats for different gifs:
-    // GIF durations:
-    // abstract1.gif: 3390 milliseconds
-    // abstract2.gif: 4050 milliseconds
-    // abstract3.gif: 1140 milliseconds
-    // Logo-1.gif: 1830 milliseconds
-    // logo-2.gif: 3180 milliseconds
+    // set a default beat - 1second = 1000
+    // we're using the beat for the abstract1 graphic, as that's what we reset to
+    beat(3390); 
 });
 
 
@@ -110,9 +197,10 @@ function resetDevicesCollection() {
 function resetConfigCollection() {
   console.log('Resetting config collection');
   ConfigCollection.remove({});
-  ConfigCollection.insert({_id: 'bpm', value: 60});
   ConfigCollection.insert({_id: 'isPaused', value: true});
   ConfigCollection.insert({_id: 'activePositions', values: [0]});
+  ConfigCollection.insert({_id: 'selectedSequence', value: 'single-regular'});
+  ConfigCollection.insert({_id: 'selectedGraphic', value: 'abstract1'});
 }
 
 function resetLocationsCollection() {
@@ -193,12 +281,17 @@ function beat(pulseRate) {
 function onBeat() {
   // TODO: loop through devices on a cycle. 
   // needs a pointer per device type
-  switch(selectedSequence) {
+  var selectedSequence = ConfigCollection.findOne('selectedSequence');
+
+  switch(selectedSequence.value) {
     case 'ticker':
       sequenceTicker();
       break;
     case 'tiered':
       sequenceSingleRegularTiered();
+      break;
+    case 'all':
+      sequenceAll();
       break;
     case 'single-regular':
     default:
@@ -239,6 +332,19 @@ function sequenceSingleRegular() {
   // update the active pointer
   // we only have one active pointer at a time
   ConfigCollection.update({_id: 'activePositions'}, {values: [currentPointer]});
+}
+
+
+function sequenceAll() {
+  var sequenceLength = LocationsCollection.find({}).count();
+
+  theValues = [];
+
+  for (var i = 1; i <= sequenceLength; i++) {
+    theValues.push(i);
+  }
+
+  ConfigCollection.update({_id: 'activePositions'}, {values: theValues});
 }
 
 
