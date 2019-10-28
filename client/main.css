@@ -13,8 +13,18 @@
 
 body {
     margin: 0;
+    background: white;
 }
 
+a.fullscreen {
+    display: block;
+    font-size: 50px;
+    line-height: 50px;
+    text-align: center;
+    background: black;
+    color: white;
+    text-decoration: none;
+}
 
 
 
@@ -30,8 +40,9 @@ body {
 
 #location-tiles li {
     flex: 20%;
+    height: auto;
     margin: 0;
-    padding: 10px;
+    padding: 2px;
     text-align: center;
 }
 
@@ -39,9 +50,9 @@ body {
     display: block;
     border: 1px solid #CCC;
     border-radius: 5px;
-    height: 50px;
+    height: 100px;
     font-size: 40px;
-    line-height: 50px;
+    line-height: 100px;
     text-decoration: none;
 }
 
@@ -68,15 +79,17 @@ div.fullscreen {
     right: 0;
     bottom: 0;
     text-align: center;
+    background-position: center center;
+    background-size: 100% auto;
 
-    background-color: white;
+    background-color: black;
     -webkit-transition: background-color 1000ms linear;
     -ms-transition: background-color 1000ms linear;
     transition: background-color 1000ms li
 }
 
 div.active-position {
-    background-color: red;
+    background-color: black;
 }
 
 h1.selected-position {
@@ -85,6 +98,26 @@ h1.selected-position {
 
 
 
+
+div.logo1 {
+    background-image: url(images/Logo-1.gif);
+}
+
+div.logo2 {
+    background-image: url(images/logo-2.gif);
+}
+
+div.abstract1 {
+    background-image: url(images/abstract1.gif);
+}
+
+div.abstract2 {
+    background-image: url(images/abstract2.gif);    
+}
+
+div.abstract3 {
+    background-image: url(images/abstract3.gif);
+}
 
 
 
@@ -102,14 +135,14 @@ h1.selected-position {
 }
 
 #admin-view div#admin-locations {
-    flex: 30%;
+    flex: 50%;
     margin: 0;
     padding: 10px;
     text-align: center;
 }
 
 #admin-view div#admin-controls {
-    flex: 70%;
+    flex: 50%;
     margin: 0;
     padding: 10px;
     text-align: center;
@@ -128,4 +161,12 @@ h1.selected-position {
 #admin-locations #location-tiles li a.current,
 #admin-locations #location-tiles li a.current:hover {
     background-color: blue;
+}
+
+#admin-view button {
+    padding: 20px;
+    font-size: 20px;
+    line-height: 30px;
+    background: black;
+    color: white;
 }

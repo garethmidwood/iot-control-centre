@@ -5,6 +5,8 @@
   <script type="text/javascript" src="js/fitty.min.js"></script>
   <script type="text/javascript" src="js/nosleep.min.js"></script>
 
+  <meta name="viewport" content="minimal-ui, width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
   <script>
     var noSleep = new NoSleep();
 
@@ -13,12 +15,43 @@
         noSleep.enable();
     }, false);
   </script>
+
+
+
+  <script>
+    function requestFullScreen() {
+
+        var el = document.body;
+
+        // Supports most browsers and their versions.
+        var requestMethod = el.requestFullScreen || el.webkitRequestFullScreen 
+        || el.mozRequestFullScreen || el.msRequestFullScreen;
+
+        if (requestMethod) {
+            // Native full screen.
+            requestMethod.call(el);
+        } else if (typeof window.ActiveXObject !== "undefined") {
+            // Older IE.
+            var wscript = new ActiveXObject("WScript.Shell");
+
+            if (wscript !== null) {
+                wscript.SendKeys("{F11}");
+            }
+        }
+
+        return false;
+    }
+</script>
+
+
+
 </head>
 
 <body>
     {{#if isAdmin}}
         {{> admin_view}}
     {{else}}
+        <a class="fullscreen" href="#" onclick="requestFullScreen(); $(this).remove();">full screen</a>
         {{> location_tiles}}
     {{/if}}
 </body>
@@ -47,6 +80,10 @@
 
         <button id="beat-control-disconnect">DISCONNECT ALL</button>
     </div>
+
+    <div>
+        {{dump_json}}
+    </div>
 </template>
 
 
@@ -59,6 +96,15 @@
                     fitty('h1.selected-position');
                 </script>
             {{/if}}
+
+            {{#if positionIsActive}}
+                <!-- Set the gif duration in server main.js in the startup func -->
+                <!-- <div class="fullscreen abstract1"></div> -->
+                <!-- <div class="fullscreen abstract2"></div> -->
+                <!-- <div class="fullscreen abstract3"></div> -->
+                <div class="fullscreen logo1"></div>
+                <!-- <div class="fullscreen logo2"></div> -->
+            {{/if}}
         </div>
     {{else}}
         <ul id="location-tiles">
@@ -70,7 +116,7 @@
 </template>
 
 <template name="location">
-    <li><a href="#" class="{{#if value}}taken{{/if}} {{#if positionIsActive (_id)}}current{{/if}}" data-position="{{_id}}">{{_id}}</a></li>
+    <li><a href="#" class="{{#if sessionId}}taken{{/if}} {{#if positionIsActive (_id)}}current{{/if}}" data-position="{{_id}}">{{_id}}</a></li>
 </template>
 
 
@@ -99,6 +145,7 @@
 
             {{> beat_counter}}
             {{> beat_controls}}
+            {{> sequence_controls}}
         </div>
     </div>   
 </template>

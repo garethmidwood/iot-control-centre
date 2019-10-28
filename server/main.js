@@ -4,6 +4,7 @@ var beatTimeout;
 var paused = true;
 // var selectedSequence = 'single-regular';
 var selectedSequence = 'tiered';
+// var selectedSequence = 'ticker';
 
 Meteor.publish("devices", function() { return DevicesCollection.find({}); });
 
@@ -41,12 +42,12 @@ Meteor.methods({
 
     var locationData = LocationsCollection.findOne(theLocation);
     
-    if (locationData.value == null) {
+    if (locationData.sessionId == null) {
       console.log('removing ', this.connection.id, ' from any existing locations');
-      LocationsCollection.update({value: this.connection.id}, { $set: { value: null } } );
+      LocationsCollection.update({sessionId: this.connection.id}, { $set: { sessionId: null } } );
 
       console.log('giving position ', theLocation, ' to ', this.connection.id);
-      LocationsCollection.update({_id: theLocation}, { $set: { value: this.connection.id } } );
+      LocationsCollection.update({_id: theLocation}, { $set: { sessionId: this.connection.id } } );
       return true;
     } else {
       return false;
@@ -78,6 +79,7 @@ Meteor.methods({
     paused = true;
     ConfigCollection.update({_id:'isPaused'}, {value: paused});
     ConfigCollection.update({_id:'activePositions'}, { values: [0]});
+    resetLocationsCollection();
   }
 });
 
@@ -88,8 +90,15 @@ Meteor.startup(() => {
     resetConfigCollection();
     resetLocationsCollection();
 
-    // default beat - 1second
-    beat(1000);
+    // default beat - 1second = 1000
+    beat(1830); 
+    // beats for different gifs:
+    // GIF durations:
+    // abstract1.gif: 3390 milliseconds
+    // abstract2.gif: 4050 milliseconds
+    // abstract3.gif: 1140 milliseconds
+    // Logo-1.gif: 1830 milliseconds
+    // logo-2.gif: 3180 milliseconds
 });
 
 
@@ -109,41 +118,41 @@ function resetConfigCollection() {
 function resetLocationsCollection() {
   console.log('Resetting locations collection');
   LocationsCollection.remove({});
-  LocationsCollection.insert({_id: "1", tier: 1, value: null});
-  LocationsCollection.insert({_id: "2", tier: 1, value: null});
-  LocationsCollection.insert({_id: "3", tier: 1, value: null});
-  LocationsCollection.insert({_id: "4", tier: 1, value: null});
-  LocationsCollection.insert({_id: "5", tier: 1, value: null});
-  LocationsCollection.insert({_id: "6", tier: 1, value: null});
-  LocationsCollection.insert({_id: "7", tier: 1, value: null});
-  LocationsCollection.insert({_id: "8", tier: 1, value: null});
-  LocationsCollection.insert({_id: "9", tier: 1, value: null});
-  LocationsCollection.insert({_id: "10", tier: 1, value: null});
-  LocationsCollection.insert({_id: "11", tier: 1, value: null});
-  LocationsCollection.insert({_id: "12", tier: 1, value: null});
-  LocationsCollection.insert({_id: "13", tier: 1, value: null});
-  LocationsCollection.insert({_id: "14", tier: 1, value: null});
-  LocationsCollection.insert({_id: "15", tier: 1, value: null});
-  LocationsCollection.insert({_id: "16", tier: 1, value: null});
-  LocationsCollection.insert({_id: "17", tier: 1, value: null});
-  LocationsCollection.insert({_id: "18", tier: 1, value: null});
-  LocationsCollection.insert({_id: "19", tier: 1, value: null});
-  LocationsCollection.insert({_id: "20", tier: 1, value: null});
-  LocationsCollection.insert({_id: "21", tier: 2, value: null});
-  LocationsCollection.insert({_id: "22", tier: 2, value: null});
-  LocationsCollection.insert({_id: "23", tier: 2, value: null});
-  LocationsCollection.insert({_id: "24", tier: 2, value: null});
-  LocationsCollection.insert({_id: "25", tier: 2, value: null});
-  LocationsCollection.insert({_id: "26", tier: 2, value: null});
-  LocationsCollection.insert({_id: "27", tier: 2, value: null});
-  LocationsCollection.insert({_id: "28", tier: 2, value: null});
-  LocationsCollection.insert({_id: "29", tier: 2, value: null});
-  LocationsCollection.insert({_id: "30", tier: 2, value: null});
-  LocationsCollection.insert({_id: "31", tier: 3, value: null});
-  LocationsCollection.insert({_id: "32", tier: 3, value: null});
-  LocationsCollection.insert({_id: "33", tier: 3, value: null});
-  LocationsCollection.insert({_id: "34", tier: 3, value: null});
-  LocationsCollection.insert({_id: "35", tier: 3, value: null});
+  LocationsCollection.insert({_id: "1", tier: 1, sessionId: null});
+  LocationsCollection.insert({_id: "2", tier: 1, sessionId: null});
+  LocationsCollection.insert({_id: "3", tier: 1, sessionId: null});
+  LocationsCollection.insert({_id: "4", tier: 1, sessionId: null});
+  LocationsCollection.insert({_id: "5", tier: 1, sessionId: null});
+  LocationsCollection.insert({_id: "6", tier: 1, sessionId: null});
+  LocationsCollection.insert({_id: "7", tier: 1, sessionId: null});
+  LocationsCollection.insert({_id: "8", tier: 1, sessionId: null});
+  LocationsCollection.insert({_id: "9", tier: 1, sessionId: null});
+  LocationsCollection.insert({_id: "10", tier: 1, sessionId: null});
+  LocationsCollection.insert({_id: "11", tier: 1, sessionId: null});
+  LocationsCollection.insert({_id: "12", tier: 1, sessionId: null});
+  LocationsCollection.insert({_id: "13", tier: 1, sessionId: null});
+  LocationsCollection.insert({_id: "14", tier: 1, sessionId: null});
+  LocationsCollection.insert({_id: "15", tier: 1, sessionId: null});
+  LocationsCollection.insert({_id: "16", tier: 1, sessionId: null});
+  LocationsCollection.insert({_id: "17", tier: 1, sessionId: null});
+  LocationsCollection.insert({_id: "18", tier: 1, sessionId: null});
+  LocationsCollection.insert({_id: "19", tier: 1, sessionId: null});
+  LocationsCollection.insert({_id: "20", tier: 1, sessionId: null});
+  LocationsCollection.insert({_id: "21", tier: 2, sessionId: null});
+  LocationsCollection.insert({_id: "22", tier: 2, sessionId: null});
+  LocationsCollection.insert({_id: "23", tier: 2, sessionId: null});
+  LocationsCollection.insert({_id: "24", tier: 2, sessionId: null});
+  LocationsCollection.insert({_id: "25", tier: 2, sessionId: null});
+  LocationsCollection.insert({_id: "26", tier: 2, sessionId: null});
+  LocationsCollection.insert({_id: "27", tier: 2, sessionId: null});
+  LocationsCollection.insert({_id: "28", tier: 2, sessionId: null});
+  LocationsCollection.insert({_id: "29", tier: 2, sessionId: null});
+  LocationsCollection.insert({_id: "30", tier: 2, sessionId: null});
+  LocationsCollection.insert({_id: "31", tier: 3, sessionId: null});
+  LocationsCollection.insert({_id: "32", tier: 3, sessionId: null});
+  LocationsCollection.insert({_id: "33", tier: 3, sessionId: null});
+  LocationsCollection.insert({_id: "34", tier: 3, sessionId: null});
+  LocationsCollection.insert({_id: "35", tier: 3, sessionId: null});
 }
 
 
@@ -154,7 +163,7 @@ function deviceOnline(connectionId) {
 
 function deviceOffline(connectionId) {
   DevicesCollection.remove( { _id: connectionId } );
-  LocationsCollection.update({value: connectionId}, { $set: {value: null} });
+  LocationsCollection.update({sessionId: connectionId}, { $set: {sessionId: null} });
 }
 
 
@@ -185,6 +194,9 @@ function onBeat() {
   // TODO: loop through devices on a cycle. 
   // needs a pointer per device type
   switch(selectedSequence) {
+    case 'ticker':
+      sequenceTicker();
+      break;
     case 'tiered':
       sequenceSingleRegularTiered();
       break;
@@ -286,6 +298,13 @@ function getTierNextStep(tierNumber, tierCurrentPosition) {
   console.log('previous', tierCurrentPosition, 'new', tierPosition, 'min', minLocation, 'max', maxLocation);
 
   return tierPosition;
+}
+
+
+function sequenceTicker() {
+  // add some more data to the LocationCollection, show the data on the phones
+  // should show on multiple phones at once, and shouldn't turn them off immediately
+  // perhaps 5 could be on at once (top tier gets tricky otherwise!)
 }
 
 

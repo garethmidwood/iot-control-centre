@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { Session } from 'meteor/session';
@@ -13,12 +14,13 @@ var beatTimeout;
 var beatInitialised = false;
 
 Session.setDefault('isAdmin', false);
-Session.setDefault('position', false);
 
 // super secure admin page
 if (window.location.pathname == '/admin') {
     Session.set('isAdmin', true);
 }
+
+
 
 
 
@@ -57,15 +59,39 @@ Template.body.helpers({
     }
 });
 
+
+
+
 Template.beat_counter.helpers({
     config: function() {
         return ConfigCollection.findOne({_id: 'bpm'});
     }
 });
 
+
+
+
 Template.beat_controls.helpers({
     sequenceIsPaused: function() {
+        if (!ConfigCollection.findOne({_id:'isPaused'})) {
+            return true;
+        }
+
         return ConfigCollection.findOne({_id:'isPaused'}).value;
+    },
+    dump_json: function() {
+        // dump collection stuff in here for debugging
+        
+        // var locations = LocationsCollection.find({});
+        // var locArray = [];
+
+        // locations.forEach(function(item) {
+        //     // if this users position is active then we'll return 
+        //     // true so that we can do something visually ace
+        //     locArray.push({_id: item._id, tier: item.tier, sessionId: item.sessionId})
+        // });
+
+        // return JSON.stringify(locArray);
     }
 });
 
@@ -90,13 +116,24 @@ Template.beat_controls.events({
 
 
 
+
+
 Template.location_tiles.helpers({
     locations: function() {
         return LocationsCollection.find({});
     },
     positionSelected: function() {
-        console.log('position selected', Session.get('position'));
-        return Session.get('position');
+        var sessionId = Meteor.default_connection._lastSessionId;
+        
+        var position = LocationsCollection.findOne({sessionId: sessionId});
+
+        if (!position) {
+            return false;
+        }
+
+        console.log('position selected', position._id);
+
+        return position._id;   
     },
     positionIsActive: function() {
         if (!ConfigCollection.findOne({_id: 'activePositions'})) {
@@ -105,11 +142,25 @@ Template.location_tiles.helpers({
         
         var isActive = false;
 
-        var currentPositions = ConfigCollection.findOne({_id: 'activePositions'});
+        var activePositions = ConfigCollection.findOne({_id: 'activePositions'});
+    
+        var sessionId = Meteor.default_connection._lastSessionId;
 
-        currentPositions.values.forEach(function(item) {
-            // set the initial beat
-            if (Session.get('position') == item) {
+        if (!sessionId) {
+            console.log('session not set, can\'t get current position');
+            return false;
+        }
+
+        var position = LocationsCollection.findOne({sessionId: sessionId});
+
+        if (!position) {
+            return false;
+        }
+
+        activePositions.values.forEach(function(item) {
+            // if this users position is active then we'll return 
+            // true so that we can do something visually ace
+            if (position._id == item) {
                 isActive = true;
             }
         });
@@ -117,6 +168,10 @@ Template.location_tiles.helpers({
         return isActive;
     },
     sequenceIsPaused: function() {
+        if (!ConfigCollection.findOne({_id:'isPaused'})) {
+            return true;
+        }
+
         return ConfigCollection.findOne({_id:'isPaused'}).value;
     }
 });
@@ -136,17 +191,21 @@ Template.location_tiles.events({
         }
         
         var position = $(event.target).data('position');
-        console.log("You clicked a tile element at position", position);
+
+        console.log("You clicked a tile element at position", position,);
         
         Meteor.call('choose_location', position, function(error, result) {
             // 'result' is the method return value
             if (result) {
                 console.log('setting position to ' + position);
-                Session.set('position', position);
             }
         });
     }
 });
+
+
+
+
 
 
 Template.location.helpers({
@@ -171,15 +230,6 @@ Template.location.helpers({
         return isActive;
     }
 });
-
-
-
-
-
-
-
-
-
 
 
 
