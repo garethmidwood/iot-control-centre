@@ -19,12 +19,17 @@
 
 
   <script>
+    // some devices require the user to interact with the site in 
+    // order to allow sounds to play
+    // this function starts the audio when the user clicks the
+    // 'fullscreen' button
     function prepForSound() {
         // play a sound
         var x = document.getElementById("audio");
         x.play();
         x.volume = 0;
         x.currentTime = 0;
+        x.pause();
     }
 
     function requestFullScreen() {

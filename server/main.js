@@ -58,10 +58,12 @@ Meteor.methods({
   'play': function() {
     paused = false;
     ConfigCollection.update({_id:'isPaused'}, {value: paused});
+    ConfigCollection.update({_id:'sequenceReset'}, {value: false});
   },
   'reset': function() {
     paused = true;
     ConfigCollection.update({_id:'isPaused'}, {value: paused});
+    ConfigCollection.update({_id:'sequenceReset'}, {value: true});
     ConfigCollection.update({_id:'activePositions'}, { values: [0]});
   },
   'disconnect': function() {
@@ -204,6 +206,7 @@ function resetConfigCollection() {
   console.log('Resetting config collection');
   ConfigCollection.remove({});
   ConfigCollection.insert({_id: 'isPaused', value: true});
+  ConfigCollection.insert({_id: 'sequenceReset', value: false});
   ConfigCollection.insert({_id: 'activePositions', values: [0]});
   ConfigCollection.insert({_id: 'selectedSequence', value: 'single-regular'});
   ConfigCollection.insert({_id: 'selectedGraphic', value: 'abstract1'});

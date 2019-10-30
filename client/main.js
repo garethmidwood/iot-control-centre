@@ -10,6 +10,49 @@ Meteor.subscribe('locations');
 
 var configHandle = Meteor.subscribe("config");
 
+
+Tracker.autorun(function() {
+    if (configHandle.ready()) {
+        // we need to watch for changes to the pause config setting
+        let isPausedConfig = ConfigCollection.find({_id: 'isPaused'});
+
+        // we will stop/start the music when the paused value changes
+        let isPausedHandle = isPausedConfig.observeChanges({
+            changed: function (id, fields) {
+                console.log('isPaused changed to ', fields.value);
+                var x = document.getElementById("audio");
+
+                if (!fields.value) {
+                    console.log('playing sound');
+                    x.play();
+                } else {
+                    console.log('pausing sound');
+                    x.pause();
+                }
+            }
+        });
+
+
+
+        // we need to watch for changes to the pause config setting
+        let sequenceResetConfig = ConfigCollection.find({_id: 'sequenceReset'});
+
+        // we will stop/start the music when the paused value changes
+        let sequenceResetHandle = sequenceResetConfig.observeChanges({
+            changed: function (id, fields) {
+                console.log('sequenceReset changed to ', fields.value);
+                var x = document.getElementById("audio");
+
+                if (fields.value) {
+                    console.log('Resetting audio to start position');
+                    x.currentTime = 0;
+                }
+            }
+        });
+    }
+});
+
+
 var beatTimeout;
 
 Session.setDefault('isAdmin', false);
