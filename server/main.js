@@ -14,9 +14,7 @@ Meteor.publish("devices", function() { return DevicesCollection.find({}); });
 
 Meteor.publish("config", function() { return ConfigCollection.find({}); });
 
-Meteor.publish("locations", function() { return LocationsCollection.find({}); });
-
-
+Meteor.publish("locations", function() { return LocationsCollection.find({}, {sort: {_id: 1} }); });
 
 
 
@@ -59,29 +57,31 @@ Meteor.methods({
   },
   'pause': function() {
     paused = true;
-    ConfigCollection.update({_id:'isPaused'}, {value: paused});
+    ConfigCollection.update({_id: 'isPaused'}, {value: paused});
   },
   'play': function() {
     paused = false;
-    ConfigCollection.update({_id:'isPaused'}, {value: paused});
-    ConfigCollection.update({_id:'sequenceReset'}, {value: false});
+    ConfigCollection.update({_id: 'isPaused'}, {value: paused});
+    ConfigCollection.update({_id: 'sequenceReset'}, {value: false});
   },
   'reset': function() {
     paused = true;
-    ConfigCollection.update({_id:'isPaused'}, {value: paused});
-    ConfigCollection.update({_id:'sequenceReset'}, {value: true});
-    ConfigCollection.update({_id:'activePositions'}, { values: [0]});
+    ConfigCollection.update({_id: 'isPaused'}, {value: paused});
+    ConfigCollection.update({_id: 'sequenceReset'}, {value: true});
+    ConfigCollection.update({_id: 'activePositions'}, { values: [0]});
+    ConfigCollection.update({_id: 'marqueeImageOffsets'}, { values: [marqueeImagesTier1.length * -1, marqueeImagesTier2.length * -1, marqueeImagesTier3.length * -1] });
+    LocationsCollection.update({}, { $set: {class: null} });
   },
   'disconnect': function() {
     paused = true;
-    ConfigCollection.update({_id:'isPaused'}, {value: paused});
-    ConfigCollection.update({_id:'activePositions'}, { values: [0]});
+    ConfigCollection.update({_id: 'isPaused'}, {value: paused});
+    ConfigCollection.update({_id: 'activePositions'}, { values: [0]});
     resetLocationsCollection();
   },
   'audio-restart': function() {
     paused = true;
-    ConfigCollection.update({_id:'isPaused'}, {value: paused});
-    ConfigCollection.update({_id:'sequenceReset'}, {value: true});
+    ConfigCollection.update({_id: 'isPaused'}, {value: paused});
+    ConfigCollection.update({_id: 'sequenceReset'}, {value: true});
   },
 
 
@@ -121,6 +121,17 @@ Meteor.methods({
     paused = true;
     ConfigCollection.update({_id:'isPaused'}, {value: paused});   
     ConfigCollection.update({_id:'selectedSequence'}, { value: 'all'});
+  },
+
+
+
+  'sequence-control-audio-on': function() {
+    console.log('switching audio to on');
+    ConfigCollection.update({_id:'audioVolume'}, { value: 1});
+  },
+  'sequence-control-audio-off': function() {
+    console.log('switching audio to off');
+    ConfigCollection.update({_id:'audioVolume'}, { value: 0});
   },
 
 
@@ -222,46 +233,47 @@ function resetConfigCollection() {
   ConfigCollection.insert({_id: 'selectedGraphic', value: 'abstract1'});
   ConfigCollection.insert({_id: 'marqueeImages', values: [marqueeImagesTier1, marqueeImagesTier2, marqueeImagesTier3]});
   ConfigCollection.insert({_id: 'marqueeImageOffsets', values: [marqueeImagesTier1.length * -1, marqueeImagesTier2.length * -1, marqueeImagesTier3.length * -1]});
+  ConfigCollection.insert({_id: 'audioVolume', value: 0});
 }
 
 function resetLocationsCollection() {
   console.log('Resetting locations collection');
   LocationsCollection.remove({});
-  LocationsCollection.insert({_id: "1", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "2", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "3", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "4", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "5", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "6", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "7", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "8", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "9", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "10", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "11", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "12", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "13", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "14", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "15", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "16", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "17", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "18", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "19", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "20", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "21", tier: 2, sessionId: null});
-  LocationsCollection.insert({_id: "22", tier: 2, sessionId: null});
-  LocationsCollection.insert({_id: "23", tier: 2, sessionId: null});
-  LocationsCollection.insert({_id: "24", tier: 2, sessionId: null});
-  LocationsCollection.insert({_id: "25", tier: 2, sessionId: null});
-  LocationsCollection.insert({_id: "26", tier: 2, sessionId: null});
-  LocationsCollection.insert({_id: "27", tier: 2, sessionId: null});
-  LocationsCollection.insert({_id: "28", tier: 2, sessionId: null});
-  LocationsCollection.insert({_id: "29", tier: 2, sessionId: null});
-  LocationsCollection.insert({_id: "30", tier: 2, sessionId: null});
-  LocationsCollection.insert({_id: "31", tier: 3, sessionId: null});
-  LocationsCollection.insert({_id: "32", tier: 3, sessionId: null});
-  LocationsCollection.insert({_id: "33", tier: 3, sessionId: null});
-  LocationsCollection.insert({_id: "34", tier: 3, sessionId: null});
-  LocationsCollection.insert({_id: "35", tier: 3, sessionId: null});
+  LocationsCollection.insert({_id: "1", tier: 1, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "2", tier: 1, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "3", tier: 1, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "4", tier: 1, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "5", tier: 1, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "6", tier: 1, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "7", tier: 1, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "8", tier: 1, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "9", tier: 1, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "10", tier: 1, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "11", tier: 1, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "12", tier: 1, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "13", tier: 1, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "14", tier: 1, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "15", tier: 1, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "16", tier: 1, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "17", tier: 1, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "18", tier: 1, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "19", tier: 1, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "20", tier: 1, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "21", tier: 2, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "22", tier: 2, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "23", tier: 2, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "24", tier: 2, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "25", tier: 2, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "26", tier: 2, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "27", tier: 2, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "28", tier: 2, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "29", tier: 2, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "30", tier: 2, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "31", tier: 3, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "32", tier: 3, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "33", tier: 3, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "34", tier: 3, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "35", tier: 3, sessionId: null, class: null});
 }
 
 
@@ -523,12 +535,17 @@ function sequenceMarquee() {
   var marqueeImageOffsets = ConfigCollection.findOne({_id: 'marqueeImageOffsets'}).values;
   var marqueeImages = ConfigCollection.findOne({_id: 'marqueeImages'}).values;
 
-  console.log('marquee image offsets', marqueeImageOffsets);
-  console.log('marquee images', marqueeImages);
+  // console.log('marquee image offsets', marqueeImageOffsets);
+  // console.log('marquee images', marqueeImages);
 
-  scrollTierMessage(1, marqueeImageOffsets, marqueeImages);
-  scrollTierMessage(2, marqueeImageOffsets, marqueeImages);
-  scrollTierMessage(3, marqueeImageOffsets, marqueeImages);
+  var tier1Pointers = scrollTierMessage(1, marqueeImageOffsets, marqueeImages);
+  var tier2Pointers = scrollTierMessage(2, marqueeImageOffsets, marqueeImages);
+  var tier3Pointers = scrollTierMessage(3, marqueeImageOffsets, marqueeImages);
+
+  var allpointervalues = tier1Pointers.concat(tier2Pointers, tier3Pointers);
+  // console.log('all pointer values are:', allpointervalues);
+
+  ConfigCollection.update({_id: 'activePositions'}, {values: allpointervalues });
 }
 
 function scrollTierMessage(tierNumber, marqueeImageOffsets, marqueeImages) {
@@ -538,17 +555,21 @@ function scrollTierMessage(tierNumber, marqueeImageOffsets, marqueeImages) {
   var tierIndex = tierNumber - 1;
   var currentOffset = marqueeImageOffsets[tierIndex];
 
+  var marqueeImagesIndex = tierNumber - 1;
+  var noImagesOnTier = marqueeImages[marqueeImagesIndex].length;
+
   // increment offset
   nextOffset = currentOffset + 1;
 
   // length of this sequence is the total number of locations
   var tierLocations = getLocationsByTier(tierNumber);
   var tierLength = tierLocations.count();
-  console.log(tierLength, 'items in tier', tierNumber);
+  // console.log(tierLength, 'items in tier', tierNumber);
 
   // reset offset when it gets to the end of the sequence
-  if (nextOffset > tierLength){
-    nextOffset = 1;
+  if (nextOffset > (tierLength - 1)) {
+    var marqueeImagesIndex = tierNumber - 1;
+    nextOffset = noImagesOnTier * -1
   }
 
   // update the offset
@@ -563,30 +584,51 @@ function scrollTierMessage(tierNumber, marqueeImageOffsets, marqueeImages) {
     imageLocations.push({location: theLocation, imageClass: item});
   });
 
-  imageLocations.forEach(function(item) {
-    // TODO: THIS!
-    console.log('now update item in location', item.location, 'to have a class of', item.imageClass);
+  // turn off the previous first location
+  var previousFirstLocation = LocationsCollection.findOne(currentOffset);
+
+  if (previousFirstLocation) {
+    LocationsCollection.update(previousFirstLocation, { $set: { class: null } } );
+  }
+
+  // zero index the locations on this tier, so that the marquee indexes match up
+  var tierLocationsZeroIndexed = [];
+
+  tierLocations.forEach(function(item) {
+    tierLocationsZeroIndexed.push(item._id);
   });
 
-  // now update the classes on each location
-  // tierLocations.forEach(function(item) {
-  //   var intId = parseInt(item._id);
-    
-  //   if (intId < minLocation) {
-  //     minLocation = intId;
-  //   }
+  // make sure it's sorted by the _id values
+  tierLocationsZeroIndexed.sort(sortNumber);
 
-  //   if (intId > maxLocation) {
-  //     maxLocation = intId;
-  //   }
-  // });
+  // we'll store the 'active' locations in this array
+  var newLocations = [];
 
-  // var noOfImages = images.length;
+  // set the classes for the current, active locations
+  imageLocations.forEach(function(item) {
+    // console.log('now update item in location', item.location, 'to have a class of', item.imageClass);
+    // console.log('looking for location', item.location, 'on tier', tierNumber);
 
-  // if (nextOffset + noOfImages > tierLength) {
+    if (!tierLocationsZeroIndexed[item.location]) {
+      return;
+    }
 
-  // }
-  // nextOffset
+    var locationString = tierLocationsZeroIndexed[item.location];
 
+    var itemLocation = LocationsCollection.findOne(locationString);
+
+    if (itemLocation) {
+      LocationsCollection.update(itemLocation, { $set: { class: item.imageClass } } );
+      console.log('turning on marquee for location ', locationString);
+      newLocations.push(locationString);
+    }
+  });
+
+  return newLocations;
 }
+
+function sortNumber(a, b) {
+  return a - b;
+}
+
 

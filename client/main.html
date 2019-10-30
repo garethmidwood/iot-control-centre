@@ -108,6 +108,10 @@
     <button id="sequence-control-marquee" class="{{#if selectedSequence 'marquee'}}selected{{/if}}">Marquee</button>
     <button id="sequence-control-all" class="{{#if selectedSequence 'all'}}selected{{/if}}">All</button>
 
+    <h3>Audio Volume</h3>
+    <button id="sequence-control-audio-on" class="{{#if selectedAudio 1}}selected{{/if}}">On</button>
+    <button id="sequence-control-audio-off" class="{{#if selectedAudio 0}}selected{{/if}}">Off</button>
+
     <h3>Graphic Selection</h3>
     <button id="sequence-control-graphics-abstract1" class="{{#if selectedGraphic 'abstract1'}}selected{{/if}}">Blinds</button>
     <button id="sequence-control-graphics-abstract2" class="{{#if selectedGraphic 'abstract2'}}selected{{/if}}">Bubbles</button>
@@ -135,7 +139,7 @@
             {{/if}}
 
             {{#if positionIsActive}}
-                <div class="fullscreen {{selectedGraphic}}"></div>
+                <div class="fullscreen {{locationClass}}"></div>
             {{/if}}
         </div>
     {{else}}

@@ -144,6 +144,13 @@ Template.sequence_controls.helpers({
         }
 
         return (graphicButton == ConfigCollection.findOne({_id:'selectedGraphic'}).value);
+    },
+    selectedAudio: function(volumeLevel) {
+        if (!ConfigCollection.findOne({_id:'audioVolume'})) {
+            return false;
+        }
+
+        return (volumeLevel == ConfigCollection.findOne({_id:'audioVolume'}).value);
     }
 });
 
@@ -171,6 +178,17 @@ Template.sequence_controls.events({
     'click button#sequence-control-all': function() {
         console.log("You clicked sequence-control-all");
         Meteor.call('sequence-control-all');
+    },
+
+
+
+    'click button#sequence-control-audio-on': function() {
+        console.log("You clicked sequence-control-audio-on");
+        Meteor.call('sequence-control-audio-on');
+    },
+    'click button#sequence-control-audio-off': function() {
+        console.log("You clicked sequence-control-audio-off");
+        Meteor.call('sequence-control-audio-off');
     },
 
 
@@ -284,11 +302,10 @@ Template.location_tiles.helpers({
         var x = document.getElementById("audio");
 
         if (isActive) {
-            // x.currentTime = 5;
-            x.volume = 1;            
+            // if this location is active, and the volume level 
+            // is > 0 then this will make the audio audible
+            x.volume = ConfigCollection.findOne('audioVolume').value;
         } else {
-            // x.currentTime = 0;
-            // x.pause();
             x.volume = 0;
         }
 
@@ -308,6 +325,28 @@ Template.location_tiles.helpers({
         }
 
         return ConfigCollection.findOne({_id:'selectedGraphic'}).value;
+    },
+    locationClass: function() {
+        var sessionId = Meteor.default_connection._lastSessionId;
+
+        if (!sessionId) {
+            console.log('session not set, can\'t get current position');
+            return false;
+        }
+
+        var position = LocationsCollection.findOne({sessionId: sessionId});
+
+        if (!position) {
+            return false;
+        }
+
+        if (position.class) {
+            return position.class;
+        } else if (!ConfigCollection.findOne({_id:'selectedGraphic'})) {
+            return '';
+        } else {
+            return ConfigCollection.findOne({_id:'selectedGraphic'}).value;
+        }
     }
 });
 
@@ -358,6 +397,7 @@ Template.location.helpers({
         currentPositions.values.forEach(function(item) {
             // set the initial beat
             if (positionToCheck == item) {
+                console.log('position', positionToCheck, 'is active');
                 isActive = true;
             }
         });
