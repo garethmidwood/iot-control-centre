@@ -21,8 +21,8 @@
   <script>
     // some devices require the user to interact with the site in 
     // order to allow sounds to play
-    // this function starts the audio when the user clicks the
-    // 'fullscreen' button
+    // this function is hooked up so that it starts the audio when 
+    // the user clicks the 'fullscreen' button
     function prepForSound() {
         // play a sound
         var x = document.getElementById("audio");
@@ -64,7 +64,7 @@
     {{#if isAdmin}}
         {{> admin_view}}
     {{else}}
-        <a class="fullscreen" href="#" onclick="requestFullScreen(); prepForSound(); $(this).remove();">full screen</a>
+        <a class="fullscreen" href="#" onclick="requestFullScreen(); prepForSound(); $(this).hide();">full screen</a>
         {{> location_tiles}}
 
         <audio id="audio" preload="auto" loop="true">

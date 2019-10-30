@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 
 var beatTimeout;
+var currentBeat;
 var paused = true;
 
 
@@ -59,6 +60,8 @@ Meteor.methods({
     paused = false;
     ConfigCollection.update({_id:'isPaused'}, {value: paused});
     ConfigCollection.update({_id:'sequenceReset'}, {value: false});
+    // reset the beat so it kicks off straight away
+    // setNewBeat(currentBeat);
   },
   'reset': function() {
     paused = true;
@@ -193,7 +196,8 @@ Meteor.startup(() => {
 
     // set a default beat - 1second = 1000
     // we're using the beat for the abstract1 graphic, as that's what we reset to
-    beat(3390); 
+    currentBeat = 3390;
+    beat(currentBeat); 
 });
 
 
@@ -217,7 +221,7 @@ function resetLocationsCollection() {
   LocationsCollection.remove({});
   LocationsCollection.insert({_id: "1", tier: 1, sessionId: null});
   LocationsCollection.insert({_id: "2", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "3", tier: 1, sessionId: null});
+  // LocationsCollection.insert({_id: "3", tier: 1, sessionId: null});
   // LocationsCollection.insert({_id: "4", tier: 1, sessionId: null});
   // LocationsCollection.insert({_id: "5", tier: 1, sessionId: null});
   // LocationsCollection.insert({_id: "6", tier: 1, sessionId: null});
@@ -271,6 +275,9 @@ function deviceOffline(connectionId) {
 
 function setNewBeat(pulseRate) {
   console.log('Setting new pulse rate to ' + pulseRate);
+
+  currentBeat = pulseRate;
+
   Meteor.clearTimeout(beatTimeout);
   beat(pulseRate);
 }
