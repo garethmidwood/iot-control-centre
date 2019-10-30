@@ -19,10 +19,11 @@ Tracker.autorun(function() {
         // we will stop/start the music when the paused value changes
         let isPausedHandle = isPausedConfig.observeChanges({
             changed: function (id, fields) {
-                console.log('isPaused changed to ', fields.value);
+                var audioIsPaused = fields.value;
+                console.log('isPaused changed to ', audioIsPaused);
                 var x = document.getElementById("audio");
 
-                if (!fields.value) {
+                if (!audioIsPaused) {
                     console.log('playing sound');
                     x.play();
                 } else {
@@ -135,6 +136,10 @@ Template.sequence_controls.events({
     'click button#sequence-control-tiered': function() {
         console.log("You clicked sequence-control-tiered");
         Meteor.call('select-sequence-tiered');
+    },
+    'click button#sequence-control-fulltier': function() {
+        console.log("You clicked sequence-control-fulltier");
+        Meteor.call('select-sequence-fulltier');
     },
     'click button#select-sequence-all': function() {
         console.log("You clicked select-sequence-all");
