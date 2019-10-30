@@ -83,14 +83,15 @@
 <template name="beat_controls">
     <div class="beat_controls">
         {{#if sequenceIsPaused}}
-            <button id="beat-control-play">PLAY</button>
+            <button id="beat-control-play">Play</button>
         {{else}}
-            <button id="beat-control-pause">PAUSE</button>
+            <button id="beat-control-pause">Pause</button>
+            <button id="beat-control-audio-restart">Restart Audio</button>
         {{/if}}
 
-        <button id="beat-control-reset">RESET</button>
-
-        <button id="beat-control-disconnect">DISCONNECT ALL</button>
+        <br/><br/>
+        <button id="beat-control-reset">Reset</button>
+        <button id="beat-control-disconnect">Disconnect All</button>
     </div>
 
     <div>
@@ -99,32 +100,31 @@
 </template>
 
 <template name="sequence_controls">
-    <h3>Sequence Controls</h3>
-    <button id="sequence-control-single">Single Ticker</button>
-    <button id="sequence-control-duo">Duo Ticker</button>
-    <button id="sequence-control-tiered">Tiered Ticker</button>
-    <button id="sequence-control-fulltier">Full Tier</button>
-    <button id="select-sequence-all">All</button>
+    <h3>Sequence Selection</h3>
+    <button id="sequence-control-single" class="{{#if selectedSequence 'single-regular'}}selected{{/if}}">Single</button>
+    <button id="sequence-control-duo" class="{{#if selectedSequence 'duo'}}selected{{/if}}">Duo</button>
+    <button id="sequence-control-tiered" class="{{#if selectedSequence 'tiered'}}selected{{/if}}">Tiered</button>
+    <button id="sequence-control-fulltier" class="{{#if selectedSequence 'fulltier'}}selected{{/if}}">Full Tier</button>
+    <button id="sequence-control-marquee" class="{{#if selectedSequence 'marquee'}}selected{{/if}}">Marquee</button>
+    <button id="sequence-control-all" class="{{#if selectedSequence 'all'}}selected{{/if}}">All</button>
 
-    <h3>Tiered Sequence Graphics</h3>
-    <button id="sequence-control-graphics-abstract1">Blinds</button>
-    <button id="sequence-control-graphics-abstract2">Bubbles</button>
-    <button id="sequence-control-graphics-abstract3">RGB Swish</button>
-    <br/>
-    <button id="sequence-control-graphics-abstract4">Fireworks</button>
-    <button id="sequence-control-graphics-abstract5">Fill</button>
-    <button id="sequence-control-graphics-abstract6">Lettering</button>
-    <br/>
-    <button id="sequence-control-graphics-colour1">Blue</button>
-    <button id="sequence-control-graphics-colour2">Orange</button>
-    <button id="sequence-control-graphics-colour3">Pink</button>
-    <br/>
-    <button id="sequence-control-graphics-colour4">Red</button>
-    <button id="sequence-control-graphics-colour5">White</button>
-    <br/>
-    <button id="sequence-control-graphics-logo1">Lightshow Logo</button>
-    <button id="sequence-control-graphics-logo2">Sliding Logo</button>
-
+    <h3>Graphic Selection</h3>
+    <button id="sequence-control-graphics-abstract1" class="{{#if selectedGraphic 'abstract1'}}selected{{/if}}">Blinds</button>
+    <button id="sequence-control-graphics-abstract2" class="{{#if selectedGraphic 'abstract2'}}selected{{/if}}">Bubbles</button>
+    <button id="sequence-control-graphics-abstract3" class="{{#if selectedGraphic 'abstract3'}}selected{{/if}}">RGB Swish</button>
+    <button id="sequence-control-graphics-abstract4" class="{{#if selectedGraphic 'abstract4'}}selected{{/if}}">Fireworks</button>
+    <br/><br/>
+    <button id="sequence-control-graphics-abstract5" class="{{#if selectedGraphic 'abstract5'}}selected{{/if}}">Fill</button>
+    <button id="sequence-control-graphics-abstract6" class="{{#if selectedGraphic 'abstract6'}}selected{{/if}}">Lettering</button>
+    <button id="sequence-control-graphics-logo1" class="{{#if selectedGraphic 'logo1'}}selected{{/if}}">Lightshow Logo</button>
+    <button id="sequence-control-graphics-logo2" class="{{#if selectedGraphic 'logo2'}}selected{{/if}}">Sliding Logo</button>
+    <br/><br/>
+    <button id="sequence-control-graphics-colour1" class="{{#if selectedGraphic 'colour1'}}selected{{/if}}">Blue</button>
+    <button id="sequence-control-graphics-colour2" class="{{#if selectedGraphic 'colour2'}}selected{{/if}}">Orange</button>
+    <button id="sequence-control-graphics-colour3" class="{{#if selectedGraphic 'colour3'}}selected{{/if}}">Pink</button>
+    <button id="sequence-control-graphics-colour4" class="{{#if selectedGraphic 'colour4'}}selected{{/if}}">Red</button>
+    <button id="sequence-control-graphics-colour5" class="{{#if selectedGraphic 'colour5'}}selected{{/if}}">White</button>
+    <br/><br/>
 </template>
 
 <template name="location_tiles">
@@ -173,7 +173,7 @@
             {{> location_tiles}} 
         </div>
         <div id="admin-controls">    
-            <h1>ADMIN CONTROLS</h1>
+            <h1>Control Panel</h1>
 
             {{> beat_controls}}
             {{> sequence_controls}}

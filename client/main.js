@@ -120,9 +120,32 @@ Template.beat_controls.events({
         console.log("You clicked a disconnect button element");
         Meteor.call('disconnect');
     },
+    'click button#beat-control-audio-restart': function() {
+        console.log("You clicked the audio restart button element");
+        Meteor.call('audio-restart');
+    }
 }); 
 
 
+
+
+
+Template.sequence_controls.helpers({
+    selectedSequence: function(sequenceButton) {
+        if (!ConfigCollection.findOne({_id:'selectedSequence'})) {
+            return true;
+        }
+
+        return (sequenceButton == ConfigCollection.findOne({_id:'selectedSequence'}).value);
+    },
+    selectedGraphic: function(graphicButton) {
+        if (!ConfigCollection.findOne({_id:'selectedGraphic'})) {
+            return true;
+        }
+
+        return (graphicButton == ConfigCollection.findOne({_id:'selectedGraphic'}).value);
+    }
+});
 
 Template.sequence_controls.events({
     'click button#sequence-control-single': function() {
@@ -141,11 +164,14 @@ Template.sequence_controls.events({
         console.log("You clicked sequence-control-fulltier");
         Meteor.call('select-sequence-fulltier');
     },
-    'click button#select-sequence-all': function() {
-        console.log("You clicked select-sequence-all");
-        Meteor.call('select-sequence-all');
+    'click button#sequence-control-marquee': function() {
+        console.log("You clicked sequence-control-marquee");
+        Meteor.call('select-sequence-marquee');
     },
-
+    'click button#sequence-control-all': function() {
+        console.log("You clicked sequence-control-all");
+        Meteor.call('sequence-control-all');
+    },
 
 
     'click button#sequence-control-graphics-abstract1': function() {

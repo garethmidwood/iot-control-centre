@@ -5,6 +5,11 @@ var currentBeat;
 var paused = true;
 
 
+var marqueeImagesTier1 = ['abstract1','abstract2','abstract3','abstract4','abstract5','abstract6'];
+var marqueeImagesTier2 = ['colour1','colour2','colour3','colour4','colour5'];
+var marqueeImagesTier3 = ['logo1','logo2'];
+
+
 Meteor.publish("devices", function() { return DevicesCollection.find({}); });
 
 Meteor.publish("config", function() { return ConfigCollection.find({}); });
@@ -60,8 +65,6 @@ Meteor.methods({
     paused = false;
     ConfigCollection.update({_id:'isPaused'}, {value: paused});
     ConfigCollection.update({_id:'sequenceReset'}, {value: false});
-    // reset the beat so it kicks off straight away
-    // setNewBeat(currentBeat);
   },
   'reset': function() {
     paused = true;
@@ -75,7 +78,11 @@ Meteor.methods({
     ConfigCollection.update({_id:'activePositions'}, { values: [0]});
     resetLocationsCollection();
   },
-
+  'audio-restart': function() {
+    paused = true;
+    ConfigCollection.update({_id:'isPaused'}, {value: paused});
+    ConfigCollection.update({_id:'sequenceReset'}, {value: true});
+  },
 
 
 
@@ -103,26 +110,19 @@ Meteor.methods({
     ConfigCollection.update({_id:'isPaused'}, {value: paused});   
     ConfigCollection.update({_id:'selectedSequence'}, { value: 'fulltier'});
   },
-  'select-sequence-ticker': function() {
-    console.log('switching to ticker sequence');
+  'select-sequence-marquee': function() {
+    console.log('switching to marquee sequence');
     paused = true;
     ConfigCollection.update({_id:'isPaused'}, {value: paused});   
-    ConfigCollection.update({_id:'selectedSequence'}, { value: 'ticker'});
+    ConfigCollection.update({_id:'selectedSequence'}, { value: 'marquee'});
   },
-  'select-sequence-all': function() {
+  'sequence-control-all': function() {
     console.log('switching to "all" sequence');
     paused = true;
     ConfigCollection.update({_id:'isPaused'}, {value: paused});   
     ConfigCollection.update({_id:'selectedSequence'}, { value: 'all'});
   },
 
-    // beats for different gifs:
-    // GIF durations:
-    // abstract1.gif: 3390 milliseconds
-    // abstract2.gif: 4050 milliseconds
-    // abstract3.gif: 1140 milliseconds
-    // Logo-1.gif: 1830 milliseconds
-    // logo-2.gif: 3180 milliseconds
 
   'set-graphic-abstract1': function() {
     console.log('switching to graphic abstract1');
@@ -220,6 +220,8 @@ function resetConfigCollection() {
   ConfigCollection.insert({_id: 'activePositions', values: [0]});
   ConfigCollection.insert({_id: 'selectedSequence', value: 'single-regular'});
   ConfigCollection.insert({_id: 'selectedGraphic', value: 'abstract1'});
+  ConfigCollection.insert({_id: 'marqueeImages', values: [marqueeImagesTier1, marqueeImagesTier2, marqueeImagesTier3]});
+  ConfigCollection.insert({_id: 'marqueeImageOffsets', values: [marqueeImagesTier1.length * -1, marqueeImagesTier2.length * -1, marqueeImagesTier3.length * -1]});
 }
 
 function resetLocationsCollection() {
@@ -518,12 +520,73 @@ function getLocationsByTier(tierNumber) {
 
 
 function sequenceMarquee() {
-  var images = [];
-  
-  // add some more data to the LocationCollection, show the data on the phones
-  // should show on multiple phones at once, and shouldn't turn them off immediately
-  // perhaps 5 could be on at once (top tier gets tricky otherwise!)
+  var marqueeImageOffsets = ConfigCollection.findOne({_id: 'marqueeImageOffsets'}).values;
+  var marqueeImages = ConfigCollection.findOne({_id: 'marqueeImages'}).values;
+
+  console.log('marquee image offsets', marqueeImageOffsets);
+  console.log('marquee images', marqueeImages);
+
+  scrollTierMessage(1, marqueeImageOffsets, marqueeImages);
+  scrollTierMessage(2, marqueeImageOffsets, marqueeImages);
+  scrollTierMessage(3, marqueeImageOffsets, marqueeImages);
 }
 
+function scrollTierMessage(tierNumber, marqueeImageOffsets, marqueeImages) {
 
+  // console.log('scrolling tier ', tierNumber, marqueeImageOffsets, marqueeImages);
+
+  var tierIndex = tierNumber - 1;
+  var currentOffset = marqueeImageOffsets[tierIndex];
+
+  // increment offset
+  nextOffset = currentOffset + 1;
+
+  // length of this sequence is the total number of locations
+  var tierLocations = getLocationsByTier(tierNumber);
+  var tierLength = tierLocations.count();
+  console.log(tierLength, 'items in tier', tierNumber);
+
+  // reset offset when it gets to the end of the sequence
+  if (nextOffset > tierLength){
+    nextOffset = 1;
+  }
+
+  // update the offset
+  marqueeImageOffsets[tierIndex] = nextOffset;
+  ConfigCollection.update({_id: 'marqueeImageOffsets'}, {values: marqueeImageOffsets});
+  console.log('Set new offset for tier', tierNumber, 'to', nextOffset);
+
+  // assign locations to each of the images in this tier
+  var imageLocations = [];
+  marqueeImages[tierIndex].forEach(function(item, index) {
+    var theLocation = index + 1 + nextOffset;
+    imageLocations.push({location: theLocation, imageClass: item});
+  });
+
+  imageLocations.forEach(function(item) {
+    // TODO: THIS!
+    console.log('now update item in location', item.location, 'to have a class of', item.imageClass);
+  });
+
+  // now update the classes on each location
+  // tierLocations.forEach(function(item) {
+  //   var intId = parseInt(item._id);
+    
+  //   if (intId < minLocation) {
+  //     minLocation = intId;
+  //   }
+
+  //   if (intId > maxLocation) {
+  //     maxLocation = intId;
+  //   }
+  // });
+
+  // var noOfImages = images.length;
+
+  // if (nextOffset + noOfImages > tierLength) {
+
+  // }
+  // nextOffset
+
+}
 

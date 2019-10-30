@@ -90,13 +90,20 @@ div.fullscreen {
 }
 
 
+h1 {
+    color: white;
+}
+
+h3 {
+    color: white;
+}
+
 h1.selected-position {
     font-size: 50px;
     line-height: 50px;
     position: absolute;
     bottom: 0;
     left: 0;
-    color: white;
 }
 
 
@@ -203,4 +210,9 @@ div.colour5 {
     line-height: 30px;
     background: black;
     color: white;
+}
+
+#admin-view button.selected {
+    background: white;
+    color: black;
 }
