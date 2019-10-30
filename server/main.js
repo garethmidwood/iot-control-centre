@@ -69,7 +69,7 @@ Meteor.methods({
     ConfigCollection.update({_id: 'isPaused'}, {value: paused});
     ConfigCollection.update({_id: 'sequenceReset'}, {value: true});
     ConfigCollection.update({_id: 'activePositions'}, { values: [0]});
-    ConfigCollection.update({_id: 'marqueeImageOffsets'}, { values: [marqueeImagesTier1.length * -1, marqueeImagesTier2.length * -1, marqueeImagesTier3.length * -1] });
+    ConfigCollection.update({_id: 'marqueeImageOffsets'}, { values: [(marqueeImagesTier1.length * -1) - 1, (marqueeImagesTier2.length * -1) - 1, (marqueeImagesTier3.length * -1) -1] });
     LocationsCollection.update({}, { $set: {class: null} });
   },
   'disconnect': function() {
@@ -232,7 +232,7 @@ function resetConfigCollection() {
   ConfigCollection.insert({_id: 'selectedSequence', value: 'single-regular'});
   ConfigCollection.insert({_id: 'selectedGraphic', value: 'abstract1'});
   ConfigCollection.insert({_id: 'marqueeImages', values: [marqueeImagesTier1, marqueeImagesTier2, marqueeImagesTier3]});
-  ConfigCollection.insert({_id: 'marqueeImageOffsets', values: [marqueeImagesTier1.length * -1, marqueeImagesTier2.length * -1, marqueeImagesTier3.length * -1]});
+  ConfigCollection.insert({_id: 'marqueeImageOffsets', values: [(marqueeImagesTier1.length * -1) - 1, (marqueeImagesTier2.length * -1) - 1, (marqueeImagesTier3.length * -1) -1]});
   ConfigCollection.insert({_id: 'audioVolume', value: 0});
 }
 
