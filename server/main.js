@@ -80,6 +80,12 @@ Meteor.methods({
     ConfigCollection.update({_id:'isPaused'}, {value: paused});   
     ConfigCollection.update({_id:'selectedSequence'}, { value: 'single-regular'});
   },
+  'select-sequence-duo': function() {
+    console.log('switching to duo sequence');
+    paused = true;
+    ConfigCollection.update({_id:'isPaused'}, {value: paused});   
+    ConfigCollection.update({_id:'selectedSequence'}, { value: 'duo'});
+  },
   'select-sequence-tiered': function() {
     console.log('switching to tiered sequence');
     paused = true;
@@ -209,38 +215,38 @@ function resetLocationsCollection() {
   LocationsCollection.insert({_id: "1", tier: 1, sessionId: null});
   LocationsCollection.insert({_id: "2", tier: 1, sessionId: null});
   LocationsCollection.insert({_id: "3", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "4", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "5", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "6", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "7", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "8", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "9", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "10", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "11", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "12", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "13", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "14", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "15", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "16", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "17", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "18", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "19", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "20", tier: 1, sessionId: null});
-  LocationsCollection.insert({_id: "21", tier: 2, sessionId: null});
-  LocationsCollection.insert({_id: "22", tier: 2, sessionId: null});
-  LocationsCollection.insert({_id: "23", tier: 2, sessionId: null});
-  LocationsCollection.insert({_id: "24", tier: 2, sessionId: null});
-  LocationsCollection.insert({_id: "25", tier: 2, sessionId: null});
-  LocationsCollection.insert({_id: "26", tier: 2, sessionId: null});
-  LocationsCollection.insert({_id: "27", tier: 2, sessionId: null});
-  LocationsCollection.insert({_id: "28", tier: 2, sessionId: null});
-  LocationsCollection.insert({_id: "29", tier: 2, sessionId: null});
-  LocationsCollection.insert({_id: "30", tier: 2, sessionId: null});
-  LocationsCollection.insert({_id: "31", tier: 3, sessionId: null});
-  LocationsCollection.insert({_id: "32", tier: 3, sessionId: null});
-  LocationsCollection.insert({_id: "33", tier: 3, sessionId: null});
-  LocationsCollection.insert({_id: "34", tier: 3, sessionId: null});
-  LocationsCollection.insert({_id: "35", tier: 3, sessionId: null});
+  // LocationsCollection.insert({_id: "4", tier: 1, sessionId: null});
+  // LocationsCollection.insert({_id: "5", tier: 1, sessionId: null});
+  // LocationsCollection.insert({_id: "6", tier: 1, sessionId: null});
+  // LocationsCollection.insert({_id: "7", tier: 1, sessionId: null});
+  // LocationsCollection.insert({_id: "8", tier: 1, sessionId: null});
+  // LocationsCollection.insert({_id: "9", tier: 1, sessionId: null});
+  // LocationsCollection.insert({_id: "10", tier: 1, sessionId: null});
+  // LocationsCollection.insert({_id: "11", tier: 1, sessionId: null});
+  // LocationsCollection.insert({_id: "12", tier: 1, sessionId: null});
+  // LocationsCollection.insert({_id: "13", tier: 1, sessionId: null});
+  // LocationsCollection.insert({_id: "14", tier: 1, sessionId: null});
+  // LocationsCollection.insert({_id: "15", tier: 1, sessionId: null});
+  // LocationsCollection.insert({_id: "16", tier: 1, sessionId: null});
+  // LocationsCollection.insert({_id: "17", tier: 1, sessionId: null});
+  // LocationsCollection.insert({_id: "18", tier: 1, sessionId: null});
+  // LocationsCollection.insert({_id: "19", tier: 1, sessionId: null});
+  // LocationsCollection.insert({_id: "20", tier: 1, sessionId: null});
+  // LocationsCollection.insert({_id: "21", tier: 2, sessionId: null});
+  // LocationsCollection.insert({_id: "22", tier: 2, sessionId: null});
+  // LocationsCollection.insert({_id: "23", tier: 2, sessionId: null});
+  // LocationsCollection.insert({_id: "24", tier: 2, sessionId: null});
+  // LocationsCollection.insert({_id: "25", tier: 2, sessionId: null});
+  // LocationsCollection.insert({_id: "26", tier: 2, sessionId: null});
+  // LocationsCollection.insert({_id: "27", tier: 2, sessionId: null});
+  // LocationsCollection.insert({_id: "28", tier: 2, sessionId: null});
+  // LocationsCollection.insert({_id: "29", tier: 2, sessionId: null});
+  // LocationsCollection.insert({_id: "30", tier: 2, sessionId: null});
+  // LocationsCollection.insert({_id: "31", tier: 3, sessionId: null});
+  // LocationsCollection.insert({_id: "32", tier: 3, sessionId: null});
+  // LocationsCollection.insert({_id: "33", tier: 3, sessionId: null});
+  // LocationsCollection.insert({_id: "34", tier: 3, sessionId: null});
+  // LocationsCollection.insert({_id: "35", tier: 3, sessionId: null});
 }
 
 
@@ -293,6 +299,9 @@ function onBeat() {
     case 'all':
       sequenceAll();
       break;
+    case 'duo':
+      sequenceTwoAtATimeRegular();
+      break;
     case 'single-regular':
     default:
       sequenceSingleRegular();
@@ -333,6 +342,36 @@ function sequenceSingleRegular() {
   // we only have one active pointer at a time
   ConfigCollection.update({_id: 'activePositions'}, {values: [currentPointer]});
 }
+
+
+function sequenceTwoAtATimeRegular() {
+  var currentPointerValues = ConfigCollection.findOne({_id: 'activePositions'}).values;
+
+  console.log('Running two at a time sequence, pointer values: ', currentPointerValues);
+
+  // there should only be two items, so use the second value in the array
+  if (currentPointerValues[1]) {
+    currentPointer = currentPointerValues[1];
+  } else {
+    currentPointer = 1;
+  }
+
+  // increment it
+  nextPointer = currentPointer + 1;
+
+  // length of this sequence is the total number of locations
+  var sequenceLength = LocationsCollection.find({}).count();
+
+  // reset note sequence pointer when it gets to the end of the sequence
+  if (nextPointer > sequenceLength){
+    nextPointer = 1;
+  }
+  
+  // update the active pointer
+  // we only have one active pointer at a time
+  ConfigCollection.update({_id: 'activePositions'}, {values: [currentPointer, nextPointer]});
+}
+
 
 
 function sequenceAll() {

@@ -19,6 +19,14 @@
 
 
   <script>
+    function prepForSound() {
+        // play a sound
+        var x = document.getElementById("audio");
+        x.play();
+        x.volume = 0;
+        x.currentTime = 0;
+    }
+
     function requestFullScreen() {
 
         var el = document.body;
@@ -51,8 +59,13 @@
     {{#if isAdmin}}
         {{> admin_view}}
     {{else}}
-        <a class="fullscreen" href="#" onclick="requestFullScreen(); $(this).remove();">full screen</a>
+        <a class="fullscreen" href="#" onclick="requestFullScreen(); prepForSound(); $(this).remove();">full screen</a>
         {{> location_tiles}}
+
+        <audio id="audio" preload="auto" loop="true">
+            <source src="audio/happy-birthday.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
     {{/if}}
 </body>
 
@@ -83,6 +96,7 @@
 <template name="sequence_controls">
     <h3>Sequence Controls</h3>
     <button id="sequence-control-single">Single Ticker</button>
+    <button id="sequence-control-duo">Duo Ticker</button>
     <button id="sequence-control-tiered">Tiered Ticker</button>
     <button id="select-sequence-all">All</button>
 

@@ -85,6 +85,10 @@ Template.sequence_controls.events({
         console.log("You clicked sequence-control-single");
         Meteor.call('select-sequence-single');
     },
+    'click button#sequence-control-duo': function() {
+        console.log("You clicked sequence-control-duo");
+        Meteor.call('select-sequence-duo');
+    },
     'click button#sequence-control-tiered': function() {
         console.log("You clicked sequence-control-tiered");
         Meteor.call('select-sequence-tiered');
@@ -203,10 +207,22 @@ Template.location_tiles.helpers({
             }
         });
 
+        var x = document.getElementById("audio");
+
+        if (isActive) {
+            // x.currentTime = 5;
+            x.volume = 1;            
+        } else {
+            // x.currentTime = 0;
+            // x.pause();
+            x.volume = 0;
+        }
+
         return isActive;
     },
     sequenceIsPaused: function() {
-        if (!ConfigCollection.findOne({_id:'isPaused'})) {
+        if (!ConfigCollection.findOne({_id:'isPaused'}) 
+        || ConfigCollection.findOne({_id:'isPaused'}).value == 1) {
             return true;
         }
 
