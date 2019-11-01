@@ -208,17 +208,19 @@ div.colour5 {
     background-color: blue;
 }
 
-#location-tiles li.tier-2::before,
+/*#location-tiles li.tier-2::before,
 #location-tiles li.tier-3::before {
       content: '';
       margin-top: 20px;
+      margin-left: 500px;
       display: block;
 }
 
 #location-tiles li.tier-2 ~ li.tier-2::before,
 #location-tiles li.tier-3 ~ li.tier-3::before {
     margin-top: 0;
-}
+    margin-left: 0;
+}*/
 
 
 
