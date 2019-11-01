@@ -91,36 +91,42 @@ Meteor.methods({
     paused = true;
     ConfigCollection.update({_id:'isPaused'}, {value: paused});   
     ConfigCollection.update({_id:'selectedSequence'}, { value: 'single-regular'});
+    removeStoredLocationClasses();
   },
   'select-sequence-duo': function() {
     console.log('switching to duo sequence');
     paused = true;
     ConfigCollection.update({_id:'isPaused'}, {value: paused});   
     ConfigCollection.update({_id:'selectedSequence'}, { value: 'duo'});
+    removeStoredLocationClasses();
   },
   'select-sequence-tiered': function() {
     console.log('switching to tiered sequence');
     paused = true;
     ConfigCollection.update({_id:'isPaused'}, {value: paused});   
     ConfigCollection.update({_id:'selectedSequence'}, { value: 'tiered'});
+    removeStoredLocationClasses();
   },
   'select-sequence-fulltier': function() {
     console.log('switching to full tier sequence');
     paused = true;
     ConfigCollection.update({_id:'isPaused'}, {value: paused});   
     ConfigCollection.update({_id:'selectedSequence'}, { value: 'fulltier'});
+    removeStoredLocationClasses();
   },
   'select-sequence-marquee': function() {
     console.log('switching to marquee sequence');
     paused = true;
     ConfigCollection.update({_id:'isPaused'}, {value: paused});   
     ConfigCollection.update({_id:'selectedSequence'}, { value: 'marquee'});
+    removeStoredLocationClasses();
   },
   'sequence-control-all': function() {
     console.log('switching to "all" sequence');
     paused = true;
     ConfigCollection.update({_id:'isPaused'}, {value: paused});   
     ConfigCollection.update({_id:'selectedSequence'}, { value: 'all'});
+    removeStoredLocationClasses();
   },
 
 
@@ -254,11 +260,11 @@ function resetLocationsCollection() {
   LocationsCollection.insert({_id: "13", tier: 1, sessionId: null, class: null});
   LocationsCollection.insert({_id: "14", tier: 1, sessionId: null, class: null});
   LocationsCollection.insert({_id: "15", tier: 1, sessionId: null, class: null});
-  LocationsCollection.insert({_id: "16", tier: 1, sessionId: null, class: null});
-  LocationsCollection.insert({_id: "17", tier: 1, sessionId: null, class: null});
-  LocationsCollection.insert({_id: "18", tier: 1, sessionId: null, class: null});
-  LocationsCollection.insert({_id: "19", tier: 1, sessionId: null, class: null});
-  LocationsCollection.insert({_id: "20", tier: 1, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "16", tier: 2, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "17", tier: 2, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "18", tier: 2, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "19", tier: 2, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "20", tier: 2, sessionId: null, class: null});
   LocationsCollection.insert({_id: "21", tier: 2, sessionId: null, class: null});
   LocationsCollection.insert({_id: "22", tier: 2, sessionId: null, class: null});
   LocationsCollection.insert({_id: "23", tier: 2, sessionId: null, class: null});
@@ -266,14 +272,14 @@ function resetLocationsCollection() {
   LocationsCollection.insert({_id: "25", tier: 2, sessionId: null, class: null});
   LocationsCollection.insert({_id: "26", tier: 2, sessionId: null, class: null});
   LocationsCollection.insert({_id: "27", tier: 2, sessionId: null, class: null});
-  LocationsCollection.insert({_id: "28", tier: 2, sessionId: null, class: null});
-  LocationsCollection.insert({_id: "29", tier: 2, sessionId: null, class: null});
-  LocationsCollection.insert({_id: "30", tier: 2, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "28", tier: 3, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "29", tier: 3, sessionId: null, class: null});
+  LocationsCollection.insert({_id: "30", tier: 3, sessionId: null, class: null});
   LocationsCollection.insert({_id: "31", tier: 3, sessionId: null, class: null});
   LocationsCollection.insert({_id: "32", tier: 3, sessionId: null, class: null});
-  LocationsCollection.insert({_id: "33", tier: 3, sessionId: null, class: null});
-  LocationsCollection.insert({_id: "34", tier: 3, sessionId: null, class: null});
-  LocationsCollection.insert({_id: "35", tier: 3, sessionId: null, class: null});
+  // LocationsCollection.insert({_id: "33", tier: 3, sessionId: null, class: null});
+  // LocationsCollection.insert({_id: "34", tier: 3, sessionId: null, class: null});
+  // LocationsCollection.insert({_id: "35", tier: 3, sessionId: null, class: null});
 }
 
 
@@ -556,7 +562,6 @@ function scrollTierMessage(tierNumber, marqueeImageOffsets, marqueeImages) {
   var currentOffset = marqueeImageOffsets[tierIndex];
 
   var marqueeImagesIndex = tierNumber - 1;
-  var noImagesOnTier = marqueeImages[marqueeImagesIndex].length;
 
   // increment offset
   nextOffset = currentOffset + 1;
@@ -564,12 +569,11 @@ function scrollTierMessage(tierNumber, marqueeImageOffsets, marqueeImages) {
   // length of this sequence is the total number of locations
   var tierLocations = getLocationsByTier(tierNumber);
   var tierLength = tierLocations.count();
-  // console.log(tierLength, 'items in tier', tierNumber);
+  // if (tierIndex == 2) { console.log(tierLength, 'items in tier', tierNumber); }
 
   // reset offset when it gets to the end of the sequence
   if (nextOffset > (tierLength - 1)) {
-    var marqueeImagesIndex = tierNumber - 1;
-    nextOffset = noImagesOnTier * -1
+    nextOffset = 0;
   }
 
   // update the offset
@@ -580,7 +584,15 @@ function scrollTierMessage(tierNumber, marqueeImageOffsets, marqueeImages) {
   // assign locations to each of the images in this tier
   var imageLocations = [];
   marqueeImages[tierIndex].forEach(function(item, index) {
-    var theLocation = index + 1 + nextOffset;
+    var theLocation = 1 + index + nextOffset;
+
+    // if (tierIndex == 2) { console.log('calculated location as ', theLocation); }
+    
+    if (theLocation >= tierLength) {
+      theLocation = theLocation - tierLength;
+      // if (tierIndex == 2) { console.log('adjusted location to ', theLocation); }
+    }
+
     imageLocations.push({location: theLocation, imageClass: item});
   });
 
@@ -631,4 +643,7 @@ function sortNumber(a, b) {
   return a - b;
 }
 
+function removeStoredLocationClasses() {
+  LocationsCollection.update({}, { $set: { class: null } } );
+}
 
