@@ -68,7 +68,8 @@
         {{> location_tiles}}
 
         <audio id="audio" preload="auto" loop="true">
-            <source src="audio/happy-birthday.mp3" type="audio/mpeg">
+            <!-- <source src="audio/happy-birthday.mp3" type="audio/mpeg"> -->
+            <source src="audio/happy-birthday-barbershop.mp3" type="audio/mpeg">
             Your browser does not support the audio element.
         </audio>
     {{/if}}
@@ -120,6 +121,7 @@
     <br/><br/>
     <button id="sequence-control-graphics-abstract5" class="{{#if selectedGraphic 'abstract5'}}selected{{/if}}">Fill</button>
     <button id="sequence-control-graphics-abstract6" class="{{#if selectedGraphic 'abstract6'}}selected{{/if}}">Lettering</button>
+    <button id="sequence-control-graphics-abstract7" class="{{#if selectedGraphic 'abstract7'}}selected{{/if}}">Sparkle Mover</button>
     <button id="sequence-control-graphics-logo1" class="{{#if selectedGraphic 'logo1'}}selected{{/if}}">Lightshow Logo</button>
     <button id="sequence-control-graphics-logo2" class="{{#if selectedGraphic 'logo2'}}selected{{/if}}">Sliding Logo</button>
     <br/><br/>
@@ -152,7 +154,7 @@
 </template>
 
 <template name="location">
-    <li><a href="#" class="{{#if sessionId}}taken{{/if}} {{#if positionIsActive (_id)}}current{{/if}}" data-position="{{_id}}">{{_id}}</a></li>
+    <li class="tier-{{tier}}"><a href="#" class="{{#if sessionId}}taken{{/if}} {{#if positionIsActive (_id)}}current{{/if}}" data-position="{{_id}}">{{_id}}</a></li>
 </template>
 
 

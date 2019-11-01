@@ -31,8 +31,8 @@ a.fullscreen {
 #location-tiles {
     display: flex;
     flex-flow: row wrap;
-    
-    align-items: stretch;
+    align-items: flex-end;
+
     list-style-type: none;
     padding: 0;
     margin: 0;
@@ -141,6 +141,10 @@ div.abstract6 {
     background-image: url(images/H.gif);
 }
 
+div.abstract7 {
+    background-image: url(images/f-sparklemover.gif);
+}
+
 div.colour1 {
     background-image: url(images/blue.gif);
 }
@@ -203,6 +207,20 @@ div.colour5 {
 #admin-locations #location-tiles li a.current:hover {
     background-color: blue;
 }
+
+#location-tiles li.tier-2::before,
+#location-tiles li.tier-3::before {
+      content: '';
+      margin-top: 20px;
+      display: block;
+}
+
+#location-tiles li.tier-2 ~ li.tier-2::before,
+#location-tiles li.tier-3 ~ li.tier-3::before {
+    margin-top: 0;
+}
+
+
 
 #admin-view button {
     padding: 20px;

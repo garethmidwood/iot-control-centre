@@ -216,6 +216,10 @@ Template.sequence_controls.events({
         console.log("You clicked sequence-control-graphics-abstract6");
         Meteor.call('set-graphic-abstract6');
     },
+    'click button#sequence-control-graphics-abstract7': function() {
+        console.log("You clicked sequence-control-graphics-abstract7");
+        Meteor.call('set-graphic-abstract7');
+    },
 
     'click button#sequence-control-graphics-logo1': function() {
         console.log("You clicked sequence-control-graphics-logo1");
@@ -258,14 +262,16 @@ Template.location_tiles.helpers({
     },
     positionSelected: function() {
         var sessionId = Meteor.default_connection._lastSessionId;
+        console.log('looking for position with session id', sessionId);
         
         var position = LocationsCollection.findOne({sessionId: sessionId});
 
         if (!position) {
-            return false;
+            console.log('this session has no current position');
+            return;
         }
 
-        console.log('position selected', position._id);
+        console.log('position selected is', position._id);
 
         return position._id;   
     },
@@ -340,6 +346,8 @@ Template.location_tiles.helpers({
             return false;
         }
 
+        console.log('position', position._id, 'has class', position.class);
+
         if (position.class) {
             return position.class;
         } else if (!ConfigCollection.findOne({_id:'selectedGraphic'})) {
@@ -372,6 +380,8 @@ Template.location_tiles.events({
             // 'result' is the method return value
             if (result) {
                 console.log('setting position to ' + position);
+            } else {
+                console.log('could not set position to ', position);
             }
         });
     }

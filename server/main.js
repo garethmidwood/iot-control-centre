@@ -5,7 +5,7 @@ var currentBeat;
 var paused = true;
 
 
-var marqueeImagesTier1 = ['abstract1','abstract2','abstract3','abstract4','abstract5','abstract6'];
+var marqueeImagesTier1 = ['abstract1','abstract2','abstract3','abstract4','abstract5','abstract6', 'abstract7'];
 var marqueeImagesTier2 = ['colour1','colour2','colour3','colour4','colour5'];
 var marqueeImagesTier3 = ['logo1','logo2'];
 
@@ -35,8 +35,6 @@ Meteor.onConnection(function (connection) {
 
 
 
-
-
 Meteor.methods({
   'choose_location': function(location) {
     var theLocation = location.toString();
@@ -52,6 +50,8 @@ Meteor.methods({
       LocationsCollection.update({_id: theLocation}, { $set: { sessionId: this.connection.id } } );
       return true;
     } else {
+      console.log('this location is already taken, cannot give it to ', this.connection.id);
+
       return false;
     }
   },
@@ -70,7 +70,6 @@ Meteor.methods({
     ConfigCollection.update({_id: 'sequenceReset'}, {value: true});
     ConfigCollection.update({_id: 'activePositions'}, { values: [0]});
     ConfigCollection.update({_id: 'marqueeImageOffsets'}, { values: [(marqueeImagesTier1.length * -1) - 1, (marqueeImagesTier2.length * -1) - 1, (marqueeImagesTier3.length * -1) -1] });
-    LocationsCollection.update({}, { $set: {class: null} });
   },
   'disconnect': function() {
     paused = true;
@@ -119,7 +118,9 @@ Meteor.methods({
     paused = true;
     ConfigCollection.update({_id:'isPaused'}, {value: paused});   
     ConfigCollection.update({_id:'selectedSequence'}, { value: 'marquee'});
+    ConfigCollection.update({_id:'selectedGraphic'}, { value: 'naah'});
     removeStoredLocationClasses();
+    setNewBeat(500);
   },
   'sequence-control-all': function() {
     console.log('switching to "all" sequence');
@@ -170,6 +171,11 @@ Meteor.methods({
     console.log('switching to graphic abstract6');
     ConfigCollection.update({_id:'selectedGraphic'}, { value: 'abstract6'});
     setNewBeat(2820);
+  },
+  'set-graphic-abstract7': function() {
+    console.log('switching to graphic abstract7');
+    ConfigCollection.update({_id:'selectedGraphic'}, { value: 'abstract7'});
+    setNewBeat(4350);
   },
   'set-graphic-logo1': function() {
     console.log('switching to graphic logo1');
@@ -644,6 +650,7 @@ function sortNumber(a, b) {
 }
 
 function removeStoredLocationClasses() {
-  LocationsCollection.update({}, { $set: { class: null } } );
+  console.log('removing stored location classes');
+  LocationsCollection.update({}, { $set: {class: null} }, { multi: true });
 }
 
