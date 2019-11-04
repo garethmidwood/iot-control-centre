@@ -216,10 +216,6 @@ Template.sequence_controls.events({
         console.log("You clicked sequence-control-graphics-abstract6");
         Meteor.call('set-graphic-abstract6');
     },
-    'click button#sequence-control-graphics-abstract7': function() {
-        console.log("You clicked sequence-control-graphics-abstract7");
-        Meteor.call('set-graphic-abstract7');
-    },
 
     'click button#sequence-control-graphics-logo1': function() {
         console.log("You clicked sequence-control-graphics-logo1");

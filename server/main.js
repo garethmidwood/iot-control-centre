@@ -5,7 +5,7 @@ var currentBeat;
 var paused = true;
 
 
-var marqueeImagesTier1 = ['abstract1','abstract2','abstract3','abstract4','abstract5','abstract6', 'abstract7'];
+var marqueeImagesTier1 = ['abstract1','abstract2','abstract3','abstract4','abstract5','abstract6'];
 var marqueeImagesTier2 = ['colour1','colour2','colour3','colour4','colour5'];
 var marqueeImagesTier3 = ['logo1','logo2'];
 
@@ -170,11 +170,6 @@ Meteor.methods({
   'set-graphic-abstract6': function() {
     console.log('switching to graphic abstract6');
     ConfigCollection.update({_id:'selectedGraphic'}, { value: 'abstract6'});
-    setNewBeat(2820);
-  },
-  'set-graphic-abstract7': function() {
-    console.log('switching to graphic abstract7');
-    ConfigCollection.update({_id:'selectedGraphic'}, { value: 'abstract7'});
     setNewBeat(4350);
   },
   'set-graphic-logo1': function() {
