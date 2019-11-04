@@ -124,7 +124,7 @@ Meteor.methods({
     ConfigCollection.update({_id:'selectedSequence'}, { value: 'marquee'});
     ConfigCollection.update({_id:'selectedGraphic'}, { value: 'naah'});
     removeStoredLocationClasses();
-    setNewBeat(500);
+    setNewBeat(1000);
   },
   'sequence-control-all': function() {
     console.log('switching to "all" sequence');
