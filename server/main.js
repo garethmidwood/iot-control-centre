@@ -5,9 +5,13 @@ var currentBeat;
 var paused = true;
 
 
-var marqueeImagesTier1 = ['abstract1','abstract2','abstract3','abstract4','abstract5','abstract6'];
-var marqueeImagesTier2 = ['colour1','colour2','colour3','colour4','colour5'];
-var marqueeImagesTier3 = ['logo1','logo2'];
+// var marqueeImagesTier1 = ['abstract1','abstract2','abstract3','abstract4','abstract5','abstract6'];
+// var marqueeImagesTier2 = ['colour1','colour2','colour3','colour4','colour5'];
+// var marqueeImagesTier3 = ['logo1','logo2'];
+
+var marqueeImagesTier1 = ['letter-b','letter-i','letter-r','letter-t','letter-h','letter-d','letter-a','letter-y'];
+var marqueeImagesTier2 = ['letter-h','letter-a','letter-p','letter-p','letter-y'];
+var marqueeImagesTier3 = ['letter-4','letter-0','letter-0'];
 
 
 Meteor.publish("devices", function() { return DevicesCollection.find({}); });
