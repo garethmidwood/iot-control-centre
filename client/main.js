@@ -23,6 +23,10 @@ Tracker.autorun(function() {
                 console.log('isPaused changed to ', audioIsPaused);
                 var x = document.getElementById("audio");
 
+                if (!x) {
+                    return;
+                }
+
                 if (!audioIsPaused) {
                     console.log('playing sound');
                     x.play();
@@ -43,6 +47,10 @@ Tracker.autorun(function() {
             changed: function (id, fields) {
                 console.log('sequenceReset changed to ', fields.value);
                 var x = document.getElementById("audio");
+
+                if (!x) {
+                    return;
+                }
 
                 if (fields.value) {
                     console.log('Resetting audio to start position');
@@ -302,6 +310,10 @@ Template.location_tiles.helpers({
         });
 
         var x = document.getElementById("audio");
+
+        if (!x) {
+            return isActive;
+        }
 
         if (isActive) {
             // if this location is active, and the volume level 
