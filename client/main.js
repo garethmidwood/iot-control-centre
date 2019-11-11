@@ -187,6 +187,10 @@ Template.sequence_controls.events({
         console.log("You clicked sequence-control-all");
         Meteor.call('sequence-control-all');
     },
+    'click button#sequence-control-random': function() {
+        console.log("You clicked sequence-control-random");
+        Meteor.call('sequence-control-random');
+    },
 
 
 
@@ -224,6 +228,29 @@ Template.sequence_controls.events({
         console.log("You clicked sequence-control-graphics-abstract6");
         Meteor.call('set-graphic-abstract6');
     },
+    'click button#sequence-control-graphics-abstract7': function() {
+        console.log("You clicked sequence-control-graphics-abstract7");
+        Meteor.call('set-graphic-abstract7');
+    },
+    'click button#sequence-control-graphics-abstract8': function() {
+        console.log("You clicked sequence-control-graphics-abstract8");
+        Meteor.call('set-graphic-abstract8');
+    },
+    'click button#sequence-control-graphics-abstract9': function() {
+        console.log("You clicked sequence-control-graphics-abstract9");
+        Meteor.call('set-graphic-abstract9');
+    },
+    'click button#sequence-control-graphics-candles1': function() {
+        console.log("You clicked sequence-control-graphics-candles1");
+        Meteor.call('set-graphic-candles1');
+    },
+    'click button#sequence-control-graphics-candles2': function() {
+        console.log("You clicked sequence-control-graphics-candles2");
+        Meteor.call('set-graphic-candles2');
+    },
+
+
+
 
     'click button#sequence-control-graphics-logo1': function() {
         console.log("You clicked sequence-control-graphics-logo1");
@@ -253,6 +280,10 @@ Template.sequence_controls.events({
     'click button#sequence-control-graphics-colour5': function() {
         console.log("You clicked sequence-control-graphics-colour5");
         Meteor.call('set-graphic-colour5');
+    },
+    'click button#sequence-control-graphics-colour6': function() {
+        console.log("You clicked sequence-control-graphics-colour5");
+        Meteor.call('set-graphic-colour6');
     }
 }); 
 

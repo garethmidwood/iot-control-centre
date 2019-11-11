@@ -141,24 +141,50 @@ div.abstract6 {
     background-image: url(images/f-sparklemover.gif);
 }
 
+div.abstract7 {
+    background-image: url(images/shapes/blue-wave.gif);
+}
+
+div.abstract8 {
+    background-image: url(images/shapes/white-wave.gif);
+}
+
+div.abstract9 {
+    background-image: url(images/shapes/higher-2.gif);
+}
+
+div.candles1 {
+    background-image: url(images/candles/candle-1.gif);
+}
+
+div.candles2 {
+    background-image: url(images/candles/candle-2.gif);
+}
+
+
+
 div.colour1 {
-    background-image: url(images/blue.gif);
+    background-image: url(images/colours/colours-blue.gif);
 }
 
 div.colour2 {
-    background-image: url(images/orange.gif);
+    background-image: url(images/colours/colours-cyan.gif);
 }
 
 div.colour3 {
-    background-image: url(images/pink.gif);
+    background-image: url(images/colours/colours-pink.gif);
 }
 
 div.colour4 {
-    background-image: url(images/red.gif);
+    background-image: url(images/colours/colours-red.gif);
 }
 
 div.colour5 {
-    background-image: url(images/white.gif);
+    background-image: url(images/colours/colours-white.gif);
+}
+
+div.colour6 {
+    background-image: url(images/colours/colours-yellow.gif);
 }
 
 

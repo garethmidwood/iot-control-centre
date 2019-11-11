@@ -9,9 +9,9 @@ var paused = true;
 // var marqueeImagesTier2 = ['colour1','colour2','colour3','colour4','colour5'];
 // var marqueeImagesTier3 = ['logo1','logo2'];
 
-var marqueeImagesTier1 = ['letter-b','letter-i','letter-r','letter-t','letter-h','letter-d','letter-a','letter-y'];
-var marqueeImagesTier2 = ['letter-h','letter-a','letter-p','letter-p','letter-y'];
-var marqueeImagesTier3 = ['letter-4','letter-0','letter-0'];
+var marqueeImagesTier1 = ['letter-g','letter-a','letter-d','letter-g','letter-e','letter-t','thisisntreal','letter-s','letter-h','letter-o','letter-w'];
+var marqueeImagesTier2 = ['letter-4','letter-0','letter-0','letter-t','letter-h'];
+var marqueeImagesTier3 = ['letter-h','letter-a','letter-p','letter-p','letter-y'];
 
 
 Meteor.publish("devices", function() { return DevicesCollection.find({}); });
@@ -124,13 +124,20 @@ Meteor.methods({
     ConfigCollection.update({_id:'selectedSequence'}, { value: 'marquee'});
     ConfigCollection.update({_id:'selectedGraphic'}, { value: 'naah'});
     removeStoredLocationClasses();
-    setNewBeat(1000);
+    setNewBeat(600);
   },
   'sequence-control-all': function() {
     console.log('switching to "all" sequence');
     paused = true;
     ConfigCollection.update({_id:'isPaused'}, {value: paused});   
     ConfigCollection.update({_id:'selectedSequence'}, { value: 'all'});
+    removeStoredLocationClasses();
+  },
+  'sequence-control-random': function() {
+    console.log('switching to "random" sequence');
+    paused = true;
+    ConfigCollection.update({_id:'isPaused'}, {value: paused});   
+    ConfigCollection.update({_id:'selectedSequence'}, { value: 'random'});
     removeStoredLocationClasses();
   },
 
@@ -176,6 +183,31 @@ Meteor.methods({
     ConfigCollection.update({_id:'selectedGraphic'}, { value: 'abstract6'});
     setNewBeat(4350);
   },
+  'set-graphic-abstract7': function() {
+    console.log('switching to graphic abstract7');
+    ConfigCollection.update({_id:'selectedGraphic'}, { value: 'abstract7'});
+    setNewBeat(840);
+  },
+  'set-graphic-abstract8': function() {
+    console.log('switching to graphic abstract8');
+    ConfigCollection.update({_id:'selectedGraphic'}, { value: 'abstract8'});
+    setNewBeat(1830);
+  },
+  'set-graphic-abstract9': function() {
+    console.log('switching to graphic abstract9');
+    ConfigCollection.update({_id:'selectedGraphic'}, { value: 'abstract9'});
+    setNewBeat(3600);
+  },
+  'set-graphic-candles1': function() {
+    console.log('switching to graphic candles1');
+    ConfigCollection.update({_id:'selectedGraphic'}, { value: 'candles1'});
+    setNewBeat(1830);
+  },
+  'set-graphic-candles2': function() {
+    console.log('switching to graphic candles2');
+    ConfigCollection.update({_id:'selectedGraphic'}, { value: 'candles2'});
+    setNewBeat(1830);
+  },
   'set-graphic-logo1': function() {
     console.log('switching to graphic logo1');
     ConfigCollection.update({_id:'selectedGraphic'}, { value: 'logo1'});
@@ -189,27 +221,32 @@ Meteor.methods({
   'set-graphic-colour1': function() {
     console.log('switching to graphic colour1');
     ConfigCollection.update({_id:'selectedGraphic'}, { value: 'colour1'});
-    setNewBeat(1880);
+    setNewBeat(810);
   },
   'set-graphic-colour2': function() {
     console.log('switching to graphic colour2');
     ConfigCollection.update({_id:'selectedGraphic'}, { value: 'colour2'});
-    setNewBeat(1880);
+    setNewBeat(810);
   },
   'set-graphic-colour3': function() {
     console.log('switching to graphic colour3');
     ConfigCollection.update({_id:'selectedGraphic'}, { value: 'colour3'});
-    setNewBeat(1880);
+    setNewBeat(810);
   },
   'set-graphic-colour4': function() {
     console.log('switching to graphic colour4');
     ConfigCollection.update({_id:'selectedGraphic'}, { value: 'colour4'});
-    setNewBeat(1880);
+    setNewBeat(810);
   },
   'set-graphic-colour5': function() {
     console.log('switching to graphic colour5');
     ConfigCollection.update({_id:'selectedGraphic'}, { value: 'colour5'});
-    setNewBeat(1880);
+    setNewBeat(810);
+  },
+  'set-graphic-colour6': function() {
+    console.log('switching to graphic colour6');
+    ConfigCollection.update({_id:'selectedGraphic'}, { value: 'colour6'});
+    setNewBeat(810);
   }
 });
 
@@ -345,6 +382,9 @@ function onBeat() {
       break;
     case 'duo':
       sequenceTwoAtATimeRegular();
+      break;
+    case 'random':
+      sequenceRandom();
       break;
     case 'single-regular':
     default:
@@ -647,6 +687,49 @@ function scrollTierMessage(tierNumber, marqueeImageOffsets, marqueeImages) {
 function sortNumber(a, b) {
   return a - b;
 }
+
+function sequenceRandom() {
+  var totalToLight = getRandomInt(3,8);
+
+  var activePositions = [];
+
+  var totalLocations = LocationsCollection.find({}).count();
+
+  var imagesToUse = ['colour1','colour2','colour3','colour4','colour5','colour6'];
+  var imagesMaxIndex = imagesToUse.length - 1;
+
+  removeStoredLocationClasses();
+
+  for (var i = 0; i < totalToLight; i++) {
+    var positionToLight = getRandomInt(1,totalLocations);
+    // console.log('randomly chose position ', positionToLight);
+    activePositions.push(positionToLight);
+
+    var indexToUse = getRandomInt(0,imagesMaxIndex);
+
+    console.log('setting colour ', imagesToUse[indexToUse], 'for location', positionToLight);
+
+    LocationsCollection.update(positionToLight, { $set: { class: imagesToUse[indexToUse] } } );
+  }
+  
+  // update the active pointer
+  // we only have one active pointer at a time
+  ConfigCollection.update({_id: 'activePositions'}, {values: activePositions});
+}
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+
+
+
+
+
+
+
 
 function removeStoredLocationClasses() {
   console.log('removing stored location classes');
